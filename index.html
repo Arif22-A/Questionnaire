@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>OCEAN BAR & KITCHEN</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCEAN BAR & KITCHEN - Kuisioner</title>
 
   <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
+    /* ===== Body & Layout ===== */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #000;
@@ -15,46 +17,48 @@
       margin: 0;
       padding: 0;
     }
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(20,20,20,0.95);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,217,0,0.4);
+      border: 2px solid #FFD700;
+    }
     header {
       text-align: center;
       padding: 20px;
       border-bottom: 2px solid gold;
     }
     header img {
-      max-width: 200px;
+      max-width: 180px;
       display: block;
       margin: 0 auto 10px auto;
-      padding-top: 16px;
     }
     h1 {
-      font-size: 24px;
-      color: #F0F8FF; /* AliceBlue, mirip iceblue */
-      
+      color: #F0F8FF;
+      margin-bottom: 5px;
     }
-     h3 {
-      font-size: 20px;
+    .lead {
+      color: #F0F8FF;
+      margin: 2px 0;
     }
-    .container {
-  width: 90%;              /* biar ada napas kanan-kiri */
-  max-width: 1000px;        /* maksimal di layar besar */
-  margin: 20px auto;
-  padding: 20px;
-  background: rgba(20, 20, 20, 0.95);
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(255, 217, 0, 0.425);
-  border: 2px solid #FFD700;
-  box-sizing: border-box;  /* hitung padding biar gak nambahin lebar */
-}
+    .lead-highlight {
+      text-shadow: 0 0 10px rgba(255,215,0,0.7);
+      font-weight: bold;
+    }
 
+    /* ===== Form Fields ===== */
     fieldset {
-  border: 2px solid #FFD700;   /* garis tepi penuh emas */
-  margin-bottom: 20px;
-  padding: 15px;
-  border-radius: 10px;
-  background: rgba(10,10,10,0.7); /* biar ada efek kotak */
-  box-shadow: 0 0 12px rgba(255,215,0,0.3); /* glow tipis emas */
-}
-
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background: rgba(10,10,10,0.7);
+      box-shadow: 0 0 12px rgba(255,215,0,0.3);
+    }
     legend {
       font-weight: bold;
       color: #FFD700;
@@ -62,8 +66,18 @@
     }
     label {
       display: block;
-      margin: 8px 0;
+      margin: 8px 0 4px 0;
     }
+    input[type="text"], select, textarea {
+      width: 98%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #FFD700;
+      background: #111;
+      color: #FFD700;
+    }
+    textarea { resize: vertical; }
+
     input[type="radio"], input[type="checkbox"] {
       accent-color: gold;
       transform: scale(1.2);
@@ -72,14 +86,8 @@
     input[type="radio"]:checked, input[type="checkbox"]:checked {
       filter: drop-shadow(0 0 4px gold);
     }
-    select, textarea, input[type="text"] {
-      width: 98%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #FFD700;
-      background: #111;
-      color: #FFD700;
-    }
+
+    /* ===== Buttons ===== */
     button {
       background: linear-gradient(45deg, #FFD700, #FFA500);
       border: none;
@@ -90,735 +98,287 @@
       cursor: pointer;
       font-weight: bold;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      text-align: center;
     }
     button:hover {
       transform: scale(1.05);
       box-shadow: 0 0 15px rgba(255,215,0,0.8);
     }
+
+    /* ===== Rating ===== */
+    .radio-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .radio-dot { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+    .radio-dot span {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      border: 1px solid #FFD700;
+      border-radius: 50%;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .radio-dot.selected span {
+      background: gold;
+      color: #000;
+      box-shadow: 0 0 10px gold;
+    }
+
+    /* ===== Voucher Card ===== */
+    .voucher-card {
+      background: rgba(20,20,20,0.9);
+      border: 2px solid #FFD700;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+      box-shadow: 0 0 15px rgba(255,215,0,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .voucher-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(255,215,0,0.6);
+    }
+    .voucher-img { width: 90%; }
+
+    /* ===== Final Buttons ===== */
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      display: none;
+    }
+
+    /* ===== Popup Voucher ===== */
+    #voucherPopup {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 9999; color: #ffeb3b; font-family: sans-serif; padding: 20px;
+    }
+    #voucherPopup .popup-content {
+      position: relative;
+      background: #222; padding: 30px 40px;
+      border-radius: 12px; max-width: 500px; width: 100%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    #closePopupBtn {
+      position: absolute; top: 15px; right: 15px;
+      background: #444; color: #ffeb3b; border:none;
+      border-radius:50%; width:36px; height:36px;
+      font-size:24px; font-weight:bold; cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,0.4);
+      transition: all 0.2s;
+    }
+    #closePopupBtn:hover {
+      background:#ffeb3b; color:#222; transform:scale(1.1);
+    }
+    #voucherPopup .wa-link { color: #ffeb3b; text-decoration: underline; }
+
     footer {
       text-align: center;
       padding: 15px;
       border-top: 2px solid gold;
       margin-top: 30px;
     }
-    .rating label {
-      display: inline-block;
-      margin: 0 8px;
-      cursor: pointer;
-    }
-    .rating input[type="radio"] {
-      display: none;
-    }
-    .rating span {
-      display: inline-block;
-      width: 28px;
-      height: 28px;
-      line-height: 28px;
-      text-align: center;
-      border: 1px solid #FFD700;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-    }
-    .rating input[type="radio"]:checked + span {
-      background: gold;
-      color: #000;
-      box-shadow: 0 0 10px gold;
-    }
-    .voucher-card{
-  background: rgba(20, 20, 20, 0.9);
-  border: 2px solid #FFD700;          /* garis tepi emas */
-  border-radius: 12px;                /* sudut melengkung */
-  padding: 20px;
-  margin: 15px 0;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); /* glow emas */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-align: center;
-}
-
-.voucher-card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); /* glow lebih terang saat hover */
-}
-.voucher-img {width: 90%
-}
-
-.btn-row {
-  display: flex;
-  justify-content: center;   /* bikin tombol rata tengah */
-  gap: 12px;                 /* jarak antar tombol */
-  flex-wrap: wrap;           /* kalau layar kecil tombol pindah ke bawah */
-}
-
-.btn-row button {
-  min-width: 180px;          /* semua tombol punya lebar sama */
-  text-align: center;
-  padding: 12px 20px;
-  border-radius: 30px;
-  font-weight: bold;
-}
-
-.lead {
-  color: #F0F8FF; /* AliceBlue, mirip iceblue */
-  }
-  .lead-highlight {
-    text-shadow: 0 0 10px rgba(255,215,0,0.7);
-  }
-
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="container" role="region" aria-label="Kuisioner Kepuasan Pelanggan Restoran">
-      <header>
-        <div class="logo"><img src="logo.png" alt="Logo Restoran" id="logoVisible"></div>
-        <div>
-          <h1>OCEAN BAR &amp; KITCHEN</h1>
-           <p class="lead">📍 Jl.Ahmad Yani 34, Kutorejo, Sragen Tengah, Kec Sragen, Kab Sragen, Jawa Tengah 57212</p>
-          <p class="lead">☎️ +62 857-1246-9835</p>
-          <br>
-          <p class="lead">Hallo Oceaner's..</p>
-          <p class="lead-highlight">Bantu kami berkembang — isi kuisioner singkat ini.
-            <div>Semua jawaban bersifat anonim.</p></div>
-        </div>
-      </header>
+  <div class="container" role="region" aria-label="Kuisioner Kepuasan Pelanggan Restoran">
+    <header>
+      <img src="logo.png" alt="Logo Restoran">
+      <h1>OCEAN BAR &amp; KITCHEN</h1>
+      <p class="lead">📍 Jl.Ahmad Yani 34, Kutorejo, Sragen</p>
+      <p class="lead">☎️ +62 857-1246-9835</p>
+      <p class="lead-highlight">Bantu kami berkembang — isi kuisioner singkat ini.</p>
+      <p class="lead">Semua jawaban bersifat anonim.</p>
+    </header>
 
-      <form id="survey" autocomplete="off">
-        <div class="section grid">
-          <div>
-            <label class="field">Nomor Meja</label>
-            <input type="text" id="meja" placeholder="Contoh: 12" />
-          </div>
+    <form id="survey" autocomplete="off">
+      <fieldset>
+        <legend>Data Pelanggan</legend>
+        <label>Nomor Meja</label>
+        <input type="text" id="meja" placeholder="Contoh: 12">
 
-          <div>
-            <label class="field">Tanggal & Jam</label>
-            <input type="text" id="waktu" readonly />
-          </div>
+        <label>Tanggal & Jam</label>
+        <input type="text" id="waktu" readonly>
 
-          <div>
-            <label class="field">Nama (opsional)</label>
-            <input type="text" id="nama" placeholder="Contoh: Budi" />
-          </div>
+        <label>Nama (opsional)</label>
+        <input type="text" id="nama" placeholder="Contoh: Budi">
 
-          <div>
-            <label class="field">Usia</label>
-            <select id="usia">
-              <option value="">Pilih rentang usia</option>
-              <option>&lt; 18</option>
-              <option>18–25</option>
-              <option>26–35</option>
-              <option>36–45</option>
-              <option>&gt; 45</option>
-            </select>
-          </div>
+        <label>Usia</label>
+        <select id="usia">
+          <option value="">Pilih rentang usia</option>
+          <option>&lt; 18</option>
+          <option>18–25</option>
+          <option>26–35</option>
+          <option>36–45</option>
+          <option>&gt; 45</option>
+        </select>
 
-          <div>
-            <label class="field">Jenis Kelamin</label>
-            <select id="gender">
-              <option value="">Pilih</option>
-              <option>Laki-laki</option>
-              <option>Perempuan</option>
-              <option>Prefer not to say</option>
-            </select>
-          </div>
+        <label>Jenis Kelamin</label>
+        <select id="gender">
+          <option value="">Pilih</option>
+          <option>Laki-laki</option>
+          <option>Perempuan</option>
+          <option>Prefer not to say</option>
+        </select>
 
-          <div>
-            <label class="field">Frekuensi kunjungan</label>
-            <select id="freq">
-              <option value="">Pilih</option>
-              <option>Pertama kali</option>
-              <option>1–2 kali/bulan</option>
-              <option>3–5 kali/bulan</option>
-              <option>> 5 kali/bulan</option>
-            </select>
-          </div>
-        </div>
+        <label>Frekuensi kunjungan</label>
+        <select id="freq">
+          <option value="">Pilih</option>
+          <option>Pertama kali</option>
+          <option>1–2 kali/bulan</option>
+          <option>3–5 kali/bulan</option>
+          <option>> 5 kali/bulan</option>
+        </select>
+      </fieldset>
 
-        <div class="section full">
-          <label class="field">Penilaian (1 = Sangat Tidak Puas, 5 = Sangat Puas)</label>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
-            <div>
-              <label class="field">Kualitas rasa makanan</label>
-              <div class="radio-row" data-name="rasa"></div>
-            </div>
-            <div>
-              <label class="field">Variasi menu</label>
-              <div class="radio-row" data-name="variasi"></div>
-            </div>
-            <div>
-              <label class="field">Kebersihan</label>
-              <div class="radio-row" data-name="kebersihan"></div>
-            </div>
-            <div>
-              <label class="field">Keramahan staff</label>
-              <div class="radio-row" data-name="pelayanan"></div>
-            </div>
-            <div>
-              <label class="field">Kecepatan penyajian</label>
-              <div class="radio-row" data-name="kecepatan"></div>
-            </div>
-            <div>
-              <label class="field">Kenyamanan & suasana</label>
-              <div class="radio-row" data-name="suasana"></div>
-            </div>
-            <div style="grid-column:1/-1">
-              <label class="field">Harga sesuai kualitas</label>
-              <div class="radio-row" data-name="harga"></div>
-            </div>
-          </div>
-        </div>
+      <fieldset>
+        <legend>Penilaian (1 = Sangat Tidak Puas, 5 = Sangat Puas)</legend>
+        <div class="radio-row" data-name="rasa"></div>
+        <div class="radio-row" data-name="variasi"></div>
+        <div class="radio-row" data-name="kebersihan"></div>
+        <div class="radio-row" data-name="pelayanan"></div>
+        <div class="radio-row" data-name="kecepatan"></div>
+        <div class="radio-row" data-name="suasana"></div>
+        <div class="radio-row" data-name="harga"></div>
+      </fieldset>
 
-        <div class="section full">
-          <label class="field">Apa yang paling Anda sukai dari restoran kami?</label>
-          <textarea id="suka" placeholder="Tulis komentar singkat..."></textarea>
-        </div>
+      <fieldset>
+        <legend>Komentar</legend>
+        <label>Apa yang paling Anda sukai dari restoran kami?</label>
+        <textarea id="like" rows="3"></textarea>
 
-        <div class="section full">
-          <label class="field">Apa yang perlu diperbaiki?</label>
-          <textarea id="perbaikan" placeholder="Masukkan saran..."></textarea>
-        </div>
+        <label>Apa yang bisa kami tingkatkan?</label>
+        <textarea id="improve" rows="3"></textarea>
+      </fieldset>
 
-        <div class="section full">
-          <label class="field">Apakah Anda akan merekomendasikan restoran kami?</label>
-          <div style="display:flex;gap:12px">
-            <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="rekomend" value="Ya"> Ya</label>
-            <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="rekomend" value="Tidak"> Tidak</label>
-          </div>
-        </div>
+      <div class="voucher-card" id="voucherCard">
+        <p>🎁 Selamat! Klaim voucher Anda:</p>
+        <img src="voucher.png" class="voucher-img" alt="Voucher Diskon">
+        <button type="button" id="claimVoucher">Klaim Voucher</button>
+      </div>
 
-        <!-- Simpan (simpan ke localStorage saja) -->
-        <div style="margin-top:12px;text-align:center">
-          <button id="saveBtn" type="button" class="btn-simpan">Simpan</button>
-        </div>
+      <div class="btn-row" id="finalButtons">
+        <button type="button" id="saveBtn">Simpan</button>
+        <button type="button" id="resetBtn">Reset</button>
+        <button type="button" id="pdfBtn">Download PDF</button>
+        <a id="waBtn" class="wa-link" href="#" target="_blank">Kirim via WhatsApp</a>
+      </div>
+    </form>
+  </div>
 
-        <!-- Voucher card (appear after save) -->
-        <div id="voucherCard" class="voucher-card" style="display:none;">
-          <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
-          <!-- visible voucher image in card -->
-          <img src="voucher.png" id="voucherVisible" class="voucher-img" alt="Voucher" />
-          <div>
-            <button id="claimVoucher" class="btn">Klaim Voucher</button>
-          </div>
-        </div>
-
-        <!-- Final buttons (appear after claim) -->
-        <div class="btn-row full" id="finalButtons" style="display:none;margin-top:14px;">
-          <button type="button" class="btn btn-ghost" id="resetBtn">Reset</button>
-          <button type="button" class="btn btn-gold" id="downloadSendBtn">Download &amp; Kirim ke WA</button>
-        </div>
-      </form>
-
-      <footer style="margin-top:14px;">
-        <small>@2025 OCEAN BAR &amp; KITCHEN — Terima kasih</small>
-      </footer>
+  <!-- ===== Popup ===== -->
+  <div id="voucherPopup">
+    <div class="popup-content">
+      <button id="closePopupBtn">&times;</button>
+      <h2>Voucher Anda</h2>
+      <p>Gunakan voucher ini saat pembayaran di restoran kami!</p>
+      <img src="voucher.png" class="voucher-img" alt="Voucher Diskon">
     </div>
   </div>
 
-  <!-- Hidden images for PDF (use same sources, can be remote or local) -->
-  <img id="logoResto" src="logo.png" style="display:none" alt="logo">
-  <img id="voucherImg" src="voucher.png" style="display:none" alt="voucher">
+  <footer>
+    @2025 Ocean Bar &amp; Kitchen - All rights reserved
+  </footer>
 
   <script>
-    /**************************************************************************
-     * Full final script
-     * - rating builder
-     * - save to localStorage (Simpan)
-     * - voucher card show
-     * - claim -> show Reset + Download&Send
-     * - reset clears localStorage & form
-     * - download&send creates PDF (logo + resto info + semua data + voucher image)
-     *   and then opens WhatsApp chat to admin
-     **************************************************************************/
+    document.addEventListener('DOMContentLoaded', ()=>{
+      // ===== Set tanggal & jam otomatis =====
+      const waktu = document.getElementById('waktu');
+      const now = new Date();
+      waktu.value = now.toLocaleString();
 
-    (function(){
-      const ratingFields = ['rasa','variasi','kebersihan','pelayanan','kecepatan','suasana','harga'];
-      const storeKey = 'kuisioner_restoran_v1';
-      const adminWA = '6285712469835'; // ganti nomor admin sesuai keperluan (format internasional tanpa +)
-
-      // build rating controls
-      function createRating(el, name){
-        for(let i=1;i<=5;i++){
-          const btn = document.createElement('label');
-          btn.className = 'radio-dot';
-          btn.title = i+' dari 5';
-          btn.innerHTML = `<input type="radio" name="${name}" value="${i}"><span>${i}</span>`;
-          btn.addEventListener('click',(e)=>{
-            const parent = e.currentTarget.parentElement;
-            parent.querySelectorAll('.radio-dot').forEach(nd=>nd.classList.remove('selected'));
-            e.currentTarget.classList.add('selected');
-          });
-          el.appendChild(btn);
-        }
-      }
-      document.querySelectorAll('.radio-row').forEach(r=>createRating(r, r.dataset.name));
-
-      // form elements
-      const form = document.getElementById('survey');
-      const saveBtn = document.getElementById('saveBtn');
-      const claimBtn = document.getElementById('claimVoucher');
+      // ===== Voucher Card =====
       const voucherCard = document.getElementById('voucherCard');
+      const claimBtn = document.getElementById('claimVoucher');
       const finalButtons = document.getElementById('finalButtons');
-      const resetBtn = document.getElementById('resetBtn');
-      const downloadSendBtn = document.getElementById('downloadSendBtn');
+      const popup = document.getElementById('voucherPopup');
+      const closeBtn = document.getElementById('closePopupBtn');
 
-      // helper: get current form data (including rating values)
-      function getFormData(){
-        const data = {};
-        data.meja = (document.getElementById('meja')?.value || '').trim();
-        data.waktu = (document.getElementById('waktu')?.value || '').trim();
-        data.nama = (document.getElementById('nama')?.value || '').trim();
-        data.usia = (document.getElementById('usia')?.value || '').trim();
-        data.gender = (document.getElementById('gender')?.value || '').trim();
-        data.freq = (document.getElementById('freq')?.value || '').trim();
-        ratingFields.forEach(f=>{
-          const val = document.querySelector(`input[name="${f}"]:checked`);
-          data[f] = val ? val.value : '';
-        });
-        data.suka = (document.getElementById('suka')?.value || '').trim();
-        data.perbaikan = (document.getElementById('perbaikan')?.value || '').trim();
-        const rekom = document.querySelector('input[name="rekomend"]:checked');
-        data.rekomend = rekom ? rekom.value : '';
-        data.timestamp = new Date().toLocaleString('id-ID');
-        return data;
-      }
+      // Contoh kondisi voucher muncul otomatis (misal semua bisa klaim)
+      voucherCard.style.display = 'block';
 
-      // populate form from saved object (including rating UI)
-      function populateForm(data){
-        if(!data) return;
-        if(data.meja) document.getElementById('meja').value = data.meja;
-        if(data.waktu) document.getElementById('waktu').value = data.waktu;
-        if(data.nama) document.getElementById('nama').value = data.nama;
-        if(data.usia) document.getElementById('usia').value = data.usia;
-        if(data.gender) document.getElementById('gender').value = data.gender;
-        if(data.freq) document.getElementById('freq').value = data.freq;
-        if(data.suka) document.getElementById('suka').value = data.suka;
-        if(data.perbaikan) document.getElementById('perbaikan').value = data.perbaikan;
-        if(data.rekomend){
-          const node = document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`);
-          if(node) node.checked = true;
-        }
-        // restore ratings
-        ratingFields.forEach(f=>{
-          if(data[f]){
-            const input = document.querySelector(`input[name="${f}"][value="${data[f]}"]`);
-            if(input){
-              input.checked = true;
-              // add selected class to label parent
-              const lbl = input.closest('label.radio-dot') || input.parentElement;
-              // clear others then add
-              const parent = input.closest('.radio-row');
-              if(parent){
-                parent.querySelectorAll('.radio-dot').forEach(nd=>nd.classList.remove('selected'));
-                if(lbl) lbl.classList.add('selected');
-              }
-            }
-          }
-        });
-      }
+      claimBtn.addEventListener('click', ()=>{
+        finalButtons.style.display = 'flex';
+        popup.style.display = 'flex';
+      });
 
-      // save current form to localStorage (Simpan button)
-      function saveToLocal(){
-        const data = getFormData();
-        localStorage.setItem(storeKey, JSON.stringify(data));
-        return data;
-      }
+      closeBtn.addEventListener('click', ()=>{
+        popup.style.display = 'none';
+      });
+      popup.addEventListener('click', e=>{
+        if(e.target === popup) popup.style.display = 'none';
+      });
 
-      // load saved from localStorage (on load)
-      function loadFromLocal(){
-        try{
-          const raw = localStorage.getItem(storeKey);
-          if(!raw) return null;
-          const obj = JSON.parse(raw);
-          populateForm(obj);
-          return obj;
-        }catch(e){
-          console.error('Gagal parse localStorage', e);
-          return null;
-        }
-      }
-
-      // clear storage and UI
-      function clearAll(){
-        localStorage.removeItem(storeKey);
-        form.reset();
-        // clear selected classes
-        document.querySelectorAll('.radio-dot.selected').forEach(el=>el.classList.remove('selected'));
-        // reset waktu to now
-        setWaktuNow();
-      }
-
-      // set waktu input to now (formatted)
-      function setWaktuNow(){
-        const waktuInput = document.getElementById('waktu');
-        if(!waktuInput) return;
-        const now = new Date();
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-        waktuInput.value = now.toLocaleString('id-ID', options);
-      }
-
-      // convert image url -> base64 data URL (used for embedding images into PDF)
-      async function getBase64ImageFromUrl(url){
-        if(!url) return null;
-        try{
-          const res = await fetch(url);
-          const blob = await res.blob();
-          return await new Promise((resolve,reject)=>{
-            const reader = new FileReader();
-            reader.onloadend = ()=>resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
+      // ===== Rating dynamic =====
+      const radioNames = ['rasa','variasi','kebersihan','pelayanan','kecepatan','suasana','harga'];
+      radioNames.forEach(name=>{
+        const container = document.querySelector(`.radio-row[data-name="${name}"]`);
+        for(let i=1;i<=5;i++){
+          const dot = document.createElement('div');
+          dot.className='radio-dot';
+          dot.innerHTML=`<span>${i}</span>`;
+          dot.addEventListener('click', ()=>{
+            container.querySelectorAll('.radio-dot').forEach(d=>d.classList.remove('selected'));
+            dot.classList.add('selected');
+            dot.setAttribute('data-value',i);
           });
-        }catch(err){
-          console.warn('Gagal fetch image (CORS?)', url, err);
-          return null;
+          container.appendChild(dot);
         }
-      }
+      });
 
-      // create PDF with full layout: header (logo/info), responden, ratings, comments, voucher (if claimed)
-      async function createPdfAndDownload(data, includeVoucher){
+      // ===== Button Actions =====
+      const survey = document.getElementById('survey');
+      document.getElementById('saveBtn').addEventListener('click', ()=>{
+        alert('✅ Data berhasil disimpan (sementara simulasi)');
+      });
+      document.getElementById('resetBtn').addEventListener('click', ()=>{ survey.reset(); finalButtons.style.display='none'; });
+      document.getElementById('pdfBtn').addEventListener('click', ()=>{
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({unit:'pt', format:'a4'}); // use pt for finer control
-        const marginLeft = 40;
-        let y = 40;
+        const doc = new jsPDF();
+        doc.setFontSize(12);
+        let y = 20;
+        doc.text('Kuisioner Ocean Bar & Kitchen', 20, y); y+=10;
+        doc.text(`Nomor Meja: ${document.getElementById('meja').value}`,20,y); y+=8;
+        doc.text(`Tanggal & Jam: ${waktu.value}`,20,y); y+=8;
+        doc.text(`Nama: ${document.getElementById('nama').value}`,20,y); y+=8;
+        doc.text(`Usia: ${document.getElementById('usia').value}`,20,y); y+=8;
+        doc.text(`Jenis Kelamin: ${document.getElementById('gender').value}`,20,y); y+=8;
+        doc.text(`Frekuensi: ${document.getElementById('freq').value}`,20,y); y+=12;
 
-        // header: logo + restaurant info
-        const logoEl = document.getElementById('logoResto');
-        if(logoEl && logoEl.src){
-          const logoData = await getBase64ImageFromUrl(logoEl.src);
-          if(logoData) {
-            // width 60 pt (~ 20mm)
-            doc.addImage(logoData, 'PNG', marginLeft, y, 60, 60);
-          }
-        }
-
-        doc.setFont('helvetica','bold');
-        doc.setFontSize(18);
-        doc.text('OCEAN BAR & KITCHEN', marginLeft + 80, y + 18);
-
-        doc.setFont('helvetica','normal');
-        doc.setFontSize(10);
-        const infoLines = [
-          'Jl.Ahmad Yani 34, Kutorejo, Sragen Tengah,Sragen, 57212',
-          '+62 857-1246-9835'
-        ];
-        let infoY = y + 36;
-        infoLines.forEach(ln=>{
-          doc.text(ln, marginLeft + 80, infoY);
-          infoY += 14;
+        radioNames.forEach(name=>{
+          const val = document.querySelector(`.radio-row[data-name="${name}"] .radio-dot.selected`);
+          doc.text(`${name}: ${val?val.getAttribute('data-value'):'-'}`,20,y); y+=8;
         });
 
-        // horizontal line
-        doc.setLineWidth(0.5);
-        doc.line(marginLeft, infoY + 6, 555, infoY + 6);
-        y = infoY + 24;
+        doc.text(`Suka: ${document.getElementById('like').value}`,20,y); y+=8;
+        doc.text(`Perbaikan: ${document.getElementById('improve').value}`,20,y); y+=8;
 
-        // Title Data Responden
-        doc.setFont('helvetica','bold');
-        doc.setFontSize(14);
-        doc.text('Data Responden', marginLeft, y);
-        y += 18;
+        doc.save('kuisioner.pdf');
+      });
 
-        // left column with respondent data
-        doc.setFont('helvetica','normal');
-        doc.setFontSize(11);
-        const rows = [
-          ['Nomor Meja', data.meja || '-'],
-          ['Tanggal & Jam', data.waktu || '-'],
-          ['Nama', data.nama || '-'],
-          ['Usia', data.usia || '-'],
-          ['Jenis Kelamin', data.gender || '-'],
-          ['Frekuensi Kunjungan', data.freq || '-'],
-        ];
-        rows.forEach(([k,v])=>{
-          doc.text(`${k}:`, marginLeft, y);
-          doc.text(String(v), marginLeft + 130, y);
-          y += 14;
-        });
-
-        y += 8;
-        // Ratings section
-        doc.setFont('helvetica','bold');
-        doc.text('Penilaian (1-5)', marginLeft, y);
-        y += 16;
-        doc.setFont('helvetica','normal');
-        ratingFields.forEach(f=>{
-          const label = f[0].toUpperCase() + f.slice(1); // simple label
-          const val = data[f] || '-';
-          doc.text(`${label}: ${val}`, marginLeft, y);
-          y += 12;
-        });
-
-        y += 8;
-        // Comments
-        doc.setFont('helvetica','bold');
-        doc.text('Komentar', marginLeft, y);
-        y += 14;
-        doc.setFont('helvetica','normal');
-        doc.text('Apa yang paling disukai:', marginLeft, y);
-        doc.text(data.suka || '-', marginLeft + 16, y + 12);
-        y += 30;
-        doc.text('Saran / Perbaikan:', marginLeft, y);
-        // wrap long text for perbaikan
-        const perbaikanText = data.perbaikan || '-';
-        const splitPerbaikan = doc.splitTextToSize(perbaikanText, 480);
-        doc.text(splitPerbaikan, marginLeft + 16, y + 12);
-        y += (splitPerbaikan.length * 12) + 10;
-
-        // Voucher
-        if(includeVoucher){
-          // add voucher title then image (if available)
-          doc.setFont('helvetica','bold');
-          doc.setFontSize(13);
-          doc.text('Voucher Diskon', marginLeft, y);
-          y += 10;
-          const voucherEl = document.getElementById('voucherImg');
-          if(voucherEl && voucherEl.src){
-            const vData = await getBase64ImageFromUrl(voucherEl.src);
-            if(vData){
-              // fit voucher image, width 180pt
-              const imgW = 180;
-              const imgH = 100;
-              // if not enough space, add new page
-              if(y + imgH > 760){ doc.addPage(); y = 40; }
-              doc.addImage(vData, 'PNG', marginLeft, y, imgW, imgH);
-              y += imgH + 10;
-            }
-          } else {
-            doc.setFontSize(11);
-            doc.setFont('helvetica','normal');
-            doc.text('Voucher: Diskon tersedia', marginLeft, y);
-            y += 16;
-          }
-        }
-
-        // Footer thank you
-        doc.setFont('helvetica','italic');
-        doc.setFontSize(10);
-        if(y + 40 > 780) { doc.addPage(); y = 40; }
-        doc.text('Terima kasih sudah membantu kami berkembang dengan mengisi kuisioner ini.', marginLeft, y + 20);
-
-        // auto-download
-        const filename = 'kuisioner_' + (new Date()).toISOString().slice(0,19).replace(/[:T]/g,'-') + '.pdf';
-        doc.save(filename);
-        return filename;
-      }
-
-     async function handleDownloadAndSend(){
-  const data = getFormData();
-  const includeVoucher = (finalButtons.style.display !== 'none');
-
-  // 1. Tampilkan overlay loading
-  let overlay = document.createElement('div');
-  overlay.id = 'pdfLoadingOverlay';
-  overlay.style.position = 'fixed';
-  overlay.style.top = 0;
-  overlay.style.left = 0;
-  overlay.style.width = '100%';
-  overlay.style.height = '100%';
-  overlay.style.background = 'rgba(0,0,0,0.5)';
-  overlay.style.display = 'flex';
-  overlay.style.alignItems = 'center';
-  overlay.style.justifyContent = 'center';
-  overlay.style.zIndex = 9999;
-  overlay.style.color = '#fff';
-  overlay.style.fontSize = '20px';
-  overlay.innerText = 'Sedang memproses PDF...';
-  document.body.appendChild(overlay);
-
-  // 2. Generate PDF
-  const filename = await createPdfAndDownload(data, includeVoucher);
-
-  // 3. Hapus overlay loading
-  document.body.removeChild(overlay);
-
-  // 4. Delay sebentar supaya file tersimpan
-  await new Promise(res => setTimeout(res, 1000));
-
-  // 5. Buka chat WA dengan pesan template
-  const pesan = encodeURIComponent(
-    `Halo admin, saya sudah mengisi kuisioner dan mengklaim voucher.\nFile PDF sudah saya simpan: ${filename}\nMohon cek.`
-  );
-  window.open(`https://wa.me/${adminWA}?text=${pesan}`, '_blank');
-}
-
-
-      // initialize
-      function init(){
-        // set waktu now
-        setWaktuNow();
-        // load local if exists (and show voucher if previously saved)
-        const saved = loadFromLocal();
-        if(saved){
-          // if data exists in storage, show voucher card (so user can claim)
-          voucherCard.style.display = 'block';
-        }
-        // wire up events
-        saveBtn.addEventListener('click', (e)=>{
-          e.preventDefault();
-          const saved = saveToLocal();
-          voucherCard.style.display = 'block';
-          alert('Data tersimpan sementara.');
-        });
-                                 
-        claimBtn.addEventListener('click', (e)=>{
-  e.preventDefault();
-
-  // Simpan data kuisioner & tandai voucher
-  const objRaw = localStorage.getItem(storeKey);
-  let obj = objRaw ? JSON.parse(objRaw) : getFormData();
-  obj.voucherClaimed = true;
-  localStorage.setItem(storeKey, JSON.stringify(obj));
-
-  // Tampilkan tombol final (reset + download & kirim)
-  finalButtons.style.display = 'flex';
-
-  // Tampilkan popup
-  const popup = document.getElementById('voucherPopup');
-  popup.style.display = 'flex';
-
-  // Tombol close popup
-  const closeBtn = document.getElementById('closePopup');
-  closeBtn.onclick = () => {
-    popup.style.display = 'none';
-  };
-
-  // Klik di luar box juga bisa close
-  popup.onclick = (event) => {
-    if(event.target === popup){
-      popup.style.display = 'none';
-    }
-  };
-});
-
-        resetBtn.addEventListener('click', (e)=>{
-          e.preventDefault();
-          if(confirm('Reset semua isian dan hapus data tersimpan?')){
-            clearAll();
-            voucherCard.style.display = 'none';
-            finalButtons.style.display = 'none';
-          }
-        });
-
-        // form submit should be same as download&send (user may press Enter)
-        form.addEventListener('submit', async (e)=>{
-          e.preventDefault();
-          // require that user has claimed voucher before sending (per flow)
-          const raw = localStorage.getItem(storeKey);
-          const savedObj = raw ? JSON.parse(raw) : null;
-          if(!(savedObj && savedObj.voucherClaimed)){
-            // If not claimed yet, show message and do not send
-            alert('Silakan klik tombol "Simpan" lalu "Klaim Voucher" sebelum mengirim.');
-            return;
-          }
-          // ensure at least one rating selected
-          const data = getFormData();
-          const anyRating = ratingFields.some(f=>data[f]);
-          if(!anyRating){
-            alert('Mohon beri penilaian minimal pada salah satu kategori.');
-            return;
-          }
-          await handleDownloadAndSend();
-          // after sending we can clear if desired:
-          // clearAll(); voucherCard.style.display='none'; finalButtons.style.display='none';
-        });
-
-        // download/send button
-        document.getElementById('downloadSendBtn').addEventListener('click', async (e)=>{
-          e.preventDefault();
-          // check claimed
-          const raw = localStorage.getItem(storeKey);
-          const savedObj = raw ? JSON.parse(raw) : null;
-          if(!(savedObj && savedObj.voucherClaimed)){
-            alert('Silakan klaim voucher terlebih dahulu.');
-            return;
-          }
-          // validate ratings
-          const data = getFormData();
-          const anyRating = ratingFields.some(f=>data[f]);
-          if(!anyRating){
-            alert('Mohon beri penilaian minimal pada salah satu kategori.');
-            return;
-          }
-          // save current form to local (update)
-          localStorage.setItem(storeKey, JSON.stringify(Object.assign({}, savedObj, data, {voucherClaimed: true})));
-          await handleDownloadAndSend();
-        });
-      } // init end
-
-      // run init on DOM ready
-      document.addEventListener('DOMContentLoaded', init);
-    })();
+      document.getElementById('waBtn').addEventListener('click', ()=>{
+        const text = encodeURIComponent(
+          `Kuisioner Ocean Bar & Kitchen\n`+
+          `Nomor Meja: ${document.getElementById('meja').value}\n`+
+          `Nama: ${document.getElementById('nama').value}\n`+
+          `Rating & Komentar:\n`+
+          radioNames.map(n=>{
+            const v = document.querySelector(`.radio-row[data-name="${n}"] .radio-dot.selected`);
+            return `${n}: ${v?v.getAttribute('data-value'):'-'}`;
+          }).join('\n')+
+          `\nSuka: ${document.getElementById('like').value}\n`+
+          `Perbaikan: ${document.getElementById('improve').value}`
+        );
+        const waLink = `https://wa.me/?text=${text}`;
+        window.open(waLink, '_blank');
+      });
+    });
   </script>
-/* Popup overlay */
-#voucherPopup {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  color: #ffeb3b;
-  font-family: sans-serif;
-  padding: 20px;
-}
-
-/* Konten popup */
-#voucherPopup .popup-content {
-  position: relative;
-  background: #222;
-  padding: 30px 40px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
-/* Tombol close modern */
-#closePopupBtn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: #444;
-  color: #ffeb3b;
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  transition: all 0.2s;
-}
-
-#closePopupBtn:hover {
-  background: #ffeb3b;
-  color: #222;
-  transform: scale(1.1);
-}
-
-/* Link WA */
-#voucherPopup .wa-link {
-  color: #ffeb3b;
-  text-decoration: underline;
-}
-<!-- Popup -->
-<div id="voucherPopup">
-  <div class="popup-content">
-    <button id="closePopupBtn" aria-label="Close">&times;</button>
-    <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
-    <p>Terima kasih sudah mengisi kuisioner. Silakan ikuti langkah berikut untuk mengirimkan data ke admin:</p>
-    <ol>
-      <li>Klik tombol <strong>Unduh & Kirim</strong> untuk membuat file PDF kuisioner Anda.</li>
-      <li>Buka WhatsApp ke admin: <a href="https://wa.me/6285712469835" target="_blank" class="wa-link">Chat Admin</a>.</li>
-      <li>Lampirkan file PDF yang sudah diunduh dan kirim.</li>
-    </ol>
-    <p>Pastikan Anda menyimpan PDF sebelum menutup halaman.</p>
-  </div>
-</div>
 </body>
 </html>
-
-
-
