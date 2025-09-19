@@ -1,215 +1,221 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OCEAN BAR & KITCHEN - Kuisioner</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCEAN BAR & KITCHEN - Kuisioner</title>
 
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <style>
-    /* ===== Body & Layout ===== */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #000;
-      color: #FFD700;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      width: 90%;
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 20px;
-      background: rgba(20,20,20,0.95);
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,217,0,0.4);
-      border: 2px solid #FFD700;
-    }
-    header {
-      text-align: center;
-      padding: 20px;
-      border-bottom: 2px solid gold;
-    }
-    header img {
-      max-width: 180px;
-      display: block;
-      margin: 0 auto 10px auto;
-    }
-    h1 {
-      color: #F0F8FF;
-      margin-bottom: 5px;
-    }
-    .lead {
-      color: #F0F8FF;
-      margin: 2px 0;
-    }
-    .lead-highlight {
-      text-shadow: 0 0 10px rgba(255,215,0,0.7);
-      font-weight: bold;
-    }
+<style>
+/* ===================== RESET ===================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+  background-color: #000;
+  color: #FFD700;
+  line-height: 1.5;
+}
+a {
+  color: #ffeb3b;
+  text-decoration: underline;
+}
+button {
+  cursor: pointer;
+}
 
-    /* ===== Form Fields ===== */
-    fieldset {
-      border: 2px solid #FFD700;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 20px;
-      background: rgba(10,10,10,0.7);
-      box-shadow: 0 0 12px rgba(255,215,0,0.3);
-    }
-    legend {
-      font-weight: bold;
-      color: #FFD700;
-      text-shadow: 0 0 5px rgba(255,215,0,0.5);
-    }
-    label {
-      display: block;
-      margin: 8px 0 4px 0;
-    }
-    input[type="text"], select, textarea {
-      width: 98%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #FFD700;
-      background: #111;
-      color: #FFD700;
-    }
-    textarea { resize: vertical; }
+/* ===================== HEADER ===================== */
+header {
+  text-align: center;
+  padding: 20px;
+  border-bottom: 2px solid gold;
+}
+header img {
+  max-width: 150px;
+  margin-bottom: 10px;
+}
+h1 {
+  font-size: 24px;
+  color: #F0F8FF;
+}
+.lead {
+  color: #F0F8FF;
+}
+.lead-highlight {
+  text-shadow: 0 0 10px rgba(255,215,0,0.7);
+}
 
-    input[type="radio"], input[type="checkbox"] {
-      accent-color: gold;
-      transform: scale(1.2);
-      margin-right: 8px;
-    }
-    input[type="radio"]:checked, input[type="checkbox"]:checked {
-      filter: drop-shadow(0 0 4px gold);
-    }
+/* ===================== CONTAINER ===================== */
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(20,20,20,0.95);
+  border-radius: 10px;
+  border: 2px solid #FFD700;
+  box-shadow: 0 0 20px rgba(255, 217, 0, 0.3);
+}
 
-    /* ===== Buttons ===== */
-    button {
-      background: linear-gradient(45deg, #FFD700, #FFA500);
-      border: none;
-      color: #000;
-      padding: 12px 20px;
-      margin: 10px 5px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(255,215,0,0.8);
-    }
+/* ===================== FIELDSETS ===================== */
+fieldset {
+  border: 2px solid #FFD700;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: rgba(10,10,10,0.7);
+  box-shadow: 0 0 12px rgba(255,215,0,0.3);
+}
+legend {
+  font-weight: bold;
+  color: #FFD700;
+  text-shadow: 0 0 5px rgba(255,215,0,0.5);
+}
+label {
+  display: block;
+  margin: 8px 0;
+}
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #FFD700;
+  background: #111;
+  color: #FFD700;
+}
+textarea { resize: vertical; }
 
-    /* ===== Rating ===== */
-    .radio-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .radio-dot { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-    .radio-dot span {
-      display: inline-block;
-      width: 28px;
-      height: 28px;
-      line-height: 28px;
-      border: 1px solid #FFD700;
-      border-radius: 50%;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-    .radio-dot.selected span {
-      background: gold;
-      color: #000;
-      box-shadow: 0 0 10px gold;
-    }
+/* ===================== RATING ===================== */
+.radio-row {
+  display: flex;
+  gap: 8px;
+  margin: 6px 0;
+}
+.radio-dot input[type="radio"] { display: none; }
+.radio-dot span {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  border: 1px solid #FFD700;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+.radio-dot.selected span {
+  background: gold;
+  color: #000;
+  box-shadow: 0 0 8px gold;
+}
 
-    /* ===== Voucher Card ===== */
-    .voucher-card {
-      background: rgba(20,20,20,0.9);
-      border: 2px solid #FFD700;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
-      text-align: center;
-      display: none;
-      box-shadow: 0 0 15px rgba(255,215,0,0.3);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .voucher-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 20px rgba(255,215,0,0.6);
-    }
-    .voucher-img { width: 90%; }
+/* ===================== BUTTONS ===================== */
+.btn {
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  border: none;
+  color: #000;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255,215,0,0.8);
+}
+.btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
 
-    /* ===== Final Buttons ===== */
-    .btn-row {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-      display: none;
-    }
+/* ===================== VOUCHER CARD ===================== */
+.voucher-card {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  margin: 15px 0;
+  border: 2px solid #FFD700;
+  border-radius: 12px;
+  background: rgba(20,20,20,0.9);
+  box-shadow: 0 0 15px rgba(255,215,0,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.voucher-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(255,215,0,0.6);
+}
+.voucher-img { max-width: 90%; margin: 10px 0; }
 
-    /* ===== Popup Voucher ===== */
-    #voucherPopup {
-      position: fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.85);
-      display: none;
-      align-items: center; justify-content: center;
-      z-index: 9999; color: #ffeb3b; font-family: sans-serif; padding: 20px;
-    }
-    #voucherPopup .popup-content {
-      position: relative;
-      background: #222; padding: 30px 40px;
-      border-radius: 12px; max-width: 500px; width: 100%;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-    #closePopupBtn {
-      position: absolute; top: 15px; right: 15px;
-      background: #444; color: #ffeb3b; border:none;
-      border-radius:50%; width:36px; height:36px;
-      font-size:24px; font-weight:bold; cursor:pointer;
-      box-shadow:0 2px 6px rgba(0,0,0,0.4);
-      transition: all 0.2s;
-    }
-    #closePopupBtn:hover {
-      background:#ffeb3b; color:#222; transform:scale(1.1);
-    }
-    #voucherPopup .wa-link { color: #ffeb3b; text-decoration: underline; }
+/* ===================== POPUP ===================== */
+#voucherPopup {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  padding: 20px;
+}
+#voucherPopup .popup-content {
+  position: relative;
+  background:#222;
+  padding:30px 40px;
+  border-radius:12px;
+  max-width:500px;
+  width:100%;
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+}
+#voucherPopup .popup-content button.close-btn {
+  position:absolute;
+  top:15px; right:15px;
+  background:#444;
+  color:#ffeb3b;
+  border:none;
+  border-radius:50%;
+  width:36px; height:36px;
+  font-size:24px; font-weight:bold;
+}
+#voucherPopup .popup-content button.close-btn:hover {
+  background:#ffeb3b; color:#222;
+  transform: scale(1.1);
+}
 
-    footer {
-      text-align: center;
-      padding: 15px;
-      border-top: 2px solid gold;
-      margin-top: 30px;
-    }
-  </style>
+/* ===================== FOOTER ===================== */
+footer {
+  text-align: center;
+  padding: 15px;
+  border-top: 2px solid gold;
+  margin-top: 30px;
+}
+</style>
 </head>
 <body>
-  <div class="container" role="region" aria-label="Kuisioner Kepuasan Pelanggan Restoran">
-    <header>
-      <img src="logo.png" alt="Logo Restoran">
-      <h1>OCEAN BAR &amp; KITCHEN</h1>
-      <p class="lead">📍 Jl.Ahmad Yani 34, Kutorejo, Sragen</p>
-      <p class="lead">☎️ +62 857-1246-9835</p>
-      <p class="lead-highlight">Bantu kami berkembang — isi kuisioner singkat ini.</p>
-      <p class="lead">Semua jawaban bersifat anonim.</p>
-    </header>
 
-    <form id="survey" autocomplete="off">
-      <fieldset>
-        <legend>Data Pelanggan</legend>
-        <label>Nomor Meja</label>
-        <input type="text" id="meja" placeholder="Contoh: 12">
+<div class="container">
+  <header>
+    <img src="logo.png" alt="Logo Restoran">
+    <h1>OCEAN BAR & KITCHEN</h1>
+    <p class="lead">📍 Jl.Ahmad Yani 34, Kutorejo, Sragen Tengah, Kec Sragen, Kab Sragen, Jawa Tengah 57212</p>
+    <p class="lead">☎️ +62 857-1246-9835</p>
+    <p class="lead-highlight">Bantu kami berkembang — isi kuisioner singkat ini. Semua jawaban bersifat anonim.</p>
+  </header>
 
-        <label>Tanggal & Jam</label>
-        <input type="text" id="waktu" readonly>
-
-        <label>Nama (opsional)</label>
-        <input type="text" id="nama" placeholder="Contoh: Budi">
-
-        <label>Usia</label>
+  <form id="survey" autocomplete="off">
+    <fieldset>
+      <legend>Data Pelanggan</legend>
+      <label>Nomor Meja <input type="text" id="meja" placeholder="Contoh: 12"></label>
+      <label>Tanggal & Jam <input type="text" id="waktu" readonly></label>
+      <label>Nama (opsional) <input type="text" id="nama" placeholder="Contoh: Budi"></label>
+      <label>Usia 
         <select id="usia">
           <option value="">Pilih rentang usia</option>
           <option>&lt; 18</option>
@@ -218,16 +224,16 @@
           <option>36–45</option>
           <option>&gt; 45</option>
         </select>
-
-        <label>Jenis Kelamin</label>
+      </label>
+      <label>Jenis Kelamin
         <select id="gender">
           <option value="">Pilih</option>
           <option>Laki-laki</option>
           <option>Perempuan</option>
           <option>Prefer not to say</option>
         </select>
-
-        <label>Frekuensi kunjungan</label>
+      </label>
+      <label>Frekuensi kunjungan
         <select id="freq">
           <option value="">Pilih</option>
           <option>Pertama kali</option>
@@ -235,150 +241,110 @@
           <option>3–5 kali/bulan</option>
           <option>> 5 kali/bulan</option>
         </select>
-      </fieldset>
+      </label>
+    </fieldset>
 
-      <fieldset>
-        <legend>Penilaian (1 = Sangat Tidak Puas, 5 = Sangat Puas)</legend>
-        <div class="radio-row" data-name="rasa"></div>
-        <div class="radio-row" data-name="variasi"></div>
-        <div class="radio-row" data-name="kebersihan"></div>
-        <div class="radio-row" data-name="pelayanan"></div>
-        <div class="radio-row" data-name="kecepatan"></div>
-        <div class="radio-row" data-name="suasana"></div>
-        <div class="radio-row" data-name="harga"></div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Komentar</legend>
-        <label>Apa yang paling Anda sukai dari restoran kami?</label>
-        <textarea id="like" rows="3"></textarea>
-
-        <label>Apa yang bisa kami tingkatkan?</label>
-        <textarea id="improve" rows="3"></textarea>
-      </fieldset>
-
-      <div class="voucher-card" id="voucherCard">
-        <p>🎁 Selamat! Klaim voucher Anda:</p>
-        <img src="voucher.png" class="voucher-img" alt="Voucher Diskon">
-        <button type="button" id="claimVoucher">Klaim Voucher</button>
+    <fieldset>
+      <legend>Penilaian (1 = Sangat Tidak Puas, 5 = Sangat Puas)</legend>
+      <div>
+        <label>Kualitas rasa makanan<div class="radio-row" data-name="rasa"></div></label>
+        <label>Variasi menu<div class="radio-row" data-name="variasi"></div></label>
+        <label>Kebersihan<div class="radio-row" data-name="kebersihan"></div></label>
+        <label>Keramahan staff<div class="radio-row" data-name="staff"></div></label>
+        <label>Kecepatan layanan<div class="radio-row" data-name="layanan"></div></label>
       </div>
+    </fieldset>
 
-      <div class="btn-row" id="finalButtons">
-        <button type="button" id="saveBtn">Simpan</button>
-        <button type="button" id="resetBtn">Reset</button>
-        <button type="button" id="pdfBtn">Download PDF</button>
-        <a id="waBtn" class="wa-link" href="#" target="_blank">Kirim via WhatsApp</a>
-      </div>
-    </form>
+    <fieldset>
+      <legend>Saran & Masukan</legend>
+      <label><textarea id="saran" rows="4" placeholder="Tulis saran Anda di sini…"></textarea></label>
+    </fieldset>
+
+    <div class="btn-row">
+      <button type="button" class="btn" id="btnSave">Simpan</button>
+      <button type="button" class="btn" id="btnReset">Reset</button>
+      <button type="button" class="btn" id="btnPDF">Download PDF</button>
+      <button type="button" class="btn" id="btnWA">Kirim WA</button>
+      <button type="button" class="btn" id="btnVoucher">Lihat Voucher</button>
+    </div>
+  </form>
+
+  <div class="voucher-card" id="voucherCard">
+    <h2>🎁 Voucher Eksklusif</h2>
+    <img class="voucher-img" src="voucher.jpg" alt="Voucher">
+    <p>Kode: OCEAN2025 — Berlaku hingga 31 Des 2025</p>
   </div>
 
-  <!-- ===== Popup ===== -->
   <div id="voucherPopup">
     <div class="popup-content">
-      <button id="closePopupBtn">&times;</button>
-      <h2>Voucher Anda</h2>
-      <p>Gunakan voucher ini saat pembayaran di restoran kami!</p>
-      <img src="voucher.png" class="voucher-img" alt="Voucher Diskon">
+      <button class="close-btn">&times;</button>
+      <h2>🎉 Voucher Eksklusif</h2>
+      <img class="voucher-img" src="voucher.jpg" alt="Voucher">
+      <p>Kode: OCEAN2025 — Berlaku hingga 31 Des 2025</p>
     </div>
   </div>
+</div>
 
-  <footer>
-    @2025 Ocean Bar &amp; Kitchen - All rights reserved
-  </footer>
+<footer>
+  @2025 OCEAN BAR & KITCHEN - All rights reserved
+</footer>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', ()=>{
-      // ===== Set tanggal & jam otomatis =====
-      const waktu = document.getElementById('waktu');
-      const now = new Date();
-      waktu.value = now.toLocaleString();
+<script>
+// ===================== JS =====================
 
-      // ===== Voucher Card =====
-      const voucherCard = document.getElementById('voucherCard');
-      const claimBtn = document.getElementById('claimVoucher');
-      const finalButtons = document.getElementById('finalButtons');
-      const popup = document.getElementById('voucherPopup');
-      const closeBtn = document.getElementById('closePopupBtn');
+// ======= Waktu otomatis =======
+const waktuInput = document.getElementById('waktu');
+waktuInput.value = new Date().toLocaleString();
 
-      // Contoh kondisi voucher muncul otomatis (misal semua bisa klaim)
-      voucherCard.style.display = 'block';
-
-      claimBtn.addEventListener('click', ()=>{
-        finalButtons.style.display = 'flex';
-        popup.style.display = 'flex';
-      });
-
-      closeBtn.addEventListener('click', ()=>{
-        popup.style.display = 'none';
-      });
-      popup.addEventListener('click', e=>{
-        if(e.target === popup) popup.style.display = 'none';
-      });
-
-      // ===== Rating dynamic =====
-      const radioNames = ['rasa','variasi','kebersihan','pelayanan','kecepatan','suasana','harga'];
-      radioNames.forEach(name=>{
-        const container = document.querySelector(`.radio-row[data-name="${name}"]`);
-        for(let i=1;i<=5;i++){
-          const dot = document.createElement('div');
-          dot.className='radio-dot';
-          dot.innerHTML=`<span>${i}</span>`;
-          dot.addEventListener('click', ()=>{
-            container.querySelectorAll('.radio-dot').forEach(d=>d.classList.remove('selected'));
-            dot.classList.add('selected');
-            dot.setAttribute('data-value',i);
-          });
-          container.appendChild(dot);
-        }
-      });
-
-      // ===== Button Actions =====
-      const survey = document.getElementById('survey');
-      document.getElementById('saveBtn').addEventListener('click', ()=>{
-        alert('✅ Data berhasil disimpan (sementara simulasi)');
-      });
-      document.getElementById('resetBtn').addEventListener('click', ()=>{ survey.reset(); finalButtons.style.display='none'; });
-      document.getElementById('pdfBtn').addEventListener('click', ()=>{
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFontSize(12);
-        let y = 20;
-        doc.text('Kuisioner Ocean Bar & Kitchen', 20, y); y+=10;
-        doc.text(`Nomor Meja: ${document.getElementById('meja').value}`,20,y); y+=8;
-        doc.text(`Tanggal & Jam: ${waktu.value}`,20,y); y+=8;
-        doc.text(`Nama: ${document.getElementById('nama').value}`,20,y); y+=8;
-        doc.text(`Usia: ${document.getElementById('usia').value}`,20,y); y+=8;
-        doc.text(`Jenis Kelamin: ${document.getElementById('gender').value}`,20,y); y+=8;
-        doc.text(`Frekuensi: ${document.getElementById('freq').value}`,20,y); y+=12;
-
-        radioNames.forEach(name=>{
-          const val = document.querySelector(`.radio-row[data-name="${name}"] .radio-dot.selected`);
-          doc.text(`${name}: ${val?val.getAttribute('data-value'):'-'}`,20,y); y+=8;
-        });
-
-        doc.text(`Suka: ${document.getElementById('like').value}`,20,y); y+=8;
-        doc.text(`Perbaikan: ${document.getElementById('improve').value}`,20,y); y+=8;
-
-        doc.save('kuisioner.pdf');
-      });
-
-      document.getElementById('waBtn').addEventListener('click', ()=>{
-        const text = encodeURIComponent(
-          `Kuisioner Ocean Bar & Kitchen\n`+
-          `Nomor Meja: ${document.getElementById('meja').value}\n`+
-          `Nama: ${document.getElementById('nama').value}\n`+
-          `Rating & Komentar:\n`+
-          radioNames.map(n=>{
-            const v = document.querySelector(`.radio-row[data-name="${n}"] .radio-dot.selected`);
-            return `${n}: ${v?v.getAttribute('data-value'):'-'}`;
-          }).join('\n')+
-          `\nSuka: ${document.getElementById('like').value}\n`+
-          `Perbaikan: ${document.getElementById('improve').value}`
-        );
-        const waLink = `https://wa.me/?text=${text}`;
-        window.open(waLink, '_blank');
-      });
+// ======= Radio rating generator =======
+document.querySelectorAll('.radio-row').forEach(row => {
+  const name = row.getAttribute('data-name');
+  for (let i=1;i<=5;i++){
+    const label = document.createElement('label');
+    label.className = 'radio-dot';
+    label.innerHTML = `<input type="radio" name="${name}" value="${i}"><span>${i}</span>`;
+    label.addEventListener('click',()=> {
+      row.querySelectorAll('.radio-dot').forEach(r=>r.classList.remove('selected'));
+      label.classList.add('selected');
     });
-  </script>
+    row.appendChild(label);
+  }
+});
+
+// ======= Tombol =======
+const survey = document.getElementById('survey');
+
+document.getElementById('btnReset').onclick = () => { survey.reset(); document.querySelectorAll('.radio-dot').forEach(r=>r.classList.remove('selected')); };
+document.getElementById('btnSave').onclick = () => alert('✅ Data berhasil disimpan (simulasi).');
+document.getElementById('btnPDF').onclick = () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(12);
+  doc.text('KUISIONER OCEAN BAR & KITCHEN', 10, 10);
+  const lines = [
+    `Nomor Meja: ${document.getElementById('meja').value}`,
+    `Nama: ${document.getElementById('nama').value}`,
+    `Usia: ${document.getElementById('usia').value}`,
+    `Jenis Kelamin: ${document.getElementById('gender').value}`,
+    `Frekuensi Kunjungan: ${document.getElementById('freq').value}`,
+    `Saran: ${document.getElementById('saran').value}`
+  ];
+  let y = 20;
+  lines.forEach(l=>{ doc.text(l,10,y); y+=10; });
+  doc.save('kuisioner.pdf');
+};
+document.getElementById('btnWA').onclick = () => {
+  const waMsg = `Isi kuisioner OCEAN BAR & KITCHEN:\nMeja: ${document.getElementById('meja').value}\nNama: ${document.getElementById('nama').value}\nSaran: ${document.getElementById('saran').value}`;
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(waMsg)}`;
+  window.open(waUrl,'_blank');
+};
+
+// ======= Voucher popup =======
+const voucherPopup = document.getElementById('voucherPopup');
+document.getElementById('btnVoucher').onclick = ()=>voucherPopup.style.display='flex';
+voucherPopup.querySelector('.close-btn').onclick = ()=>voucherPopup.style.display='none';
+window.onclick = (e)=>{ if(e.target==voucherPopup) voucherPopup.style.display='none'; };
+</script>
+
 </body>
 </html>
