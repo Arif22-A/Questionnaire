@@ -31,6 +31,9 @@
       color: #F0F8FF; /* AliceBlue, mirip iceblue */
       
     }
+     h3 {
+      font-size: 20px;
+    }
     .container {
   width: 90%;              /* biar ada napas kanan-kiri */
   max-width: 1000px;        /* maksimal di layar besar */
@@ -745,43 +748,48 @@
       document.addEventListener('DOMContentLoaded', init);
     })();
   </script>
-  <!-- Popup panduan voucher -->
+<!-- Popup panduan voucher -->
 <div id="voucherPopup" style="
     display: none;
     position: fixed;
     top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.85); /* background hitam transparan */
     z-index: 9999;
     justify-content: center;
     align-items: center;
 ">
   <div style="
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
+      background: #1a1a1a; /* popup hitam pekat */
+      padding: 30px 25px;
+      border-radius: 12px;
       max-width: 500px;
       width: 90%;
       position: relative;
+      color: #ffeb3b; /* teks kuning */
+      font-family: Arial, sans-serif;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
   ">
     <button id="closePopup" style="
         position: absolute;
-        top: 10px;
-        right: 10px;
-        background: #f44336;
-        color: #fff;
+        top: 12px;
+        right: 12px;
+        background: #ffeb3b; /* kuning */
+        color: #1a1a1a; /* teks hitam */
         border: none;
         border-radius: 50%;
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         font-weight: bold;
+        font-size: 18px;
         cursor: pointer;
-    ">×</button>
+        transition: all 0.2s;
+    " onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">×</button>
+
     <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
     <p>Terima kasih sudah mengisi kuisioner. Silakan ikuti langkah berikut untuk mengirimkan data ke admin:</p>
     <ol>
-      <li>Klik tombol <strong>Simpan</strong> untuk menyimpan kuisioner Anda.</li>
       <li>Klik tombol <strong>Unduh & Kirim</strong> untuk membuat file PDF kuisioner Anda.</li>
-      <li>Buka WhatsApp ke admin: <a href="https://wa.me/6285712469835" target="_blank">Chat Admin</a>.</li>
+      <li>Buka WhatsApp ke admin: <a href="https://wa.me/6285712469835" target="_blank" style="color:#ffeb3b; text-decoration:underline;">Chat Admin</a>.</li>
       <li>Lampirkan file PDF yang sudah diunduh dan kirim.</li>
     </ol>
     <p>Pastikan Anda menyimpan PDF sebelum menutup halaman.</p>
@@ -790,20 +798,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
