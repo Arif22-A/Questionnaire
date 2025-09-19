@@ -599,16 +599,44 @@
         return filename;
       }
 
-      // Download & Send to WA (download PDF then open wa.me)
-      async function handleDownloadAndSend(){
-        const data = getFormData();
-        // include voucher only if voucherCard was claimed (finalButtons visible)
-        const includeVoucher = (finalButtons.style.display !== 'none');
-        await createPdfAndDownload(data, includeVoucher);
-        // open WhatsApp chat (cannot auto attach file via wa.me)
-        const pesan = encodeURIComponent('Halo admin, saya sudah mengisi kuisioner dan mengklaim voucher. File PDF sudah saya simpan, mohon cek.');
-        window.open(`https://wa.me/${adminWA}?text=${pesan}`, '_blank');
-      }
+     async function handleDownloadAndSend(){
+  const data = getFormData();
+  const includeVoucher = (finalButtons.style.display !== 'none');
+
+  // 1. Tampilkan overlay loading
+  let overlay = document.createElement('div');
+  overlay.id = 'pdfLoadingOverlay';
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100%';
+  overlay.style.height = '100%';
+  overlay.style.background = 'rgba(0,0,0,0.5)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = 9999;
+  overlay.style.color = '#fff';
+  overlay.style.fontSize = '20px';
+  overlay.innerText = 'Sedang memproses PDF...';
+  document.body.appendChild(overlay);
+
+  // 2. Generate PDF
+  const filename = await createPdfAndDownload(data, includeVoucher);
+
+  // 3. Hapus overlay loading
+  document.body.removeChild(overlay);
+
+  // 4. Delay sebentar supaya file tersimpan
+  await new Promise(res => setTimeout(res, 1000));
+
+  // 5. Buka chat WA dengan pesan template
+  const pesan = encodeURIComponent(
+    `Halo admin, saya sudah mengisi kuisioner dan mengklaim voucher.\nFile PDF sudah saya simpan: ${filename}\nMohon cek.`
+  );
+  window.open(`https://wa.me/${adminWA}?text=${pesan}`, '_blank');
+}
+
 
       // initialize
       function init(){
@@ -636,7 +664,8 @@
           obj.voucherClaimed = true;
           localStorage.setItem(storeKey, JSON.stringify(obj));
           finalButtons.style.display = 'flex';
-          alert('Selamat Anda mendapatkan voucher potongan harga.');
+          alert('Selamat Anda mendapatkan voucher potongan harga,dan ikuti langkah berikut untuk mengirimkan hasil kuisioner,
+         setelah chat room dengan admin terbuka,klik tombol attach file > pilih dokumen > dan pilih file format pdf yang sudah terdownload/tersimpan diperangkat anda.');
         });
 
         resetBtn.addEventListener('click', (e)=>{
@@ -700,6 +729,7 @@
   </script>
 </body>
 </html>
+
 
 
 
