@@ -656,41 +656,83 @@
           alert('Data tersimpan sementara.');
         });
 
-      claimBtn.addEventListener('click', (e)=>{
-  e.preventDefault();
-  
-  const objRaw = localStorage.getItem(storeKey);
-  let obj = objRaw ? JSON.parse(objRaw) : getFormData();
-  obj.voucherClaimed = true;
-  localStorage.setItem(storeKey, JSON.stringify(obj));
-  
-  finalButtons.style.display = 'flex';
+  document.addEventListener('DOMContentLoaded', function() {
+  const claimBtn = document.getElementById('claimVoucher');
+  const finalButtons = document.getElementById('finalButtons');
+  const storeKey = 'kuisioner_restoran_v1';
 
-  // Tampilkan notifikasi di container khusus (form tetap aman)
-  const notifContainer = document.getElementById('voucherNotifContainer');
-  notifContainer.innerHTML = ''; // clear sebelumnya
-  const notif = document.createElement('div');
-  notif.style.background = '#fff3cd';
-  notif.style.border = '1px solid #ffeeba';
-  notif.style.padding = '20px';
-  notif.style.borderRadius = '8px';
-  notif.innerHTML = `
-    <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
-    <p>Terima kasih sudah mengisi kuisioner. Silakan ikuti langkah berikut untuk mengirimkan data ke admin:</p>
-    <ol>
-      <li>Klik tombol <strong>Simpan</strong> untuk menyimpan kuisioner Anda.</li>
-      <li>Setelah itu klik <strong>Unduh & Kirim</strong> untuk membuat file PDF kuisioner Anda.</li>
-      <li>Buka WhatsApp ke admin: <a href="https://wa.me/6285712469835" target="_blank">Chat Admin</a>.</li>
-      <li>Lampirkan file PDF yang sudah diunduh dan kirim.</li>
-    </ol>
-    <p>Pastikan Anda menyimpan PDF sebelum menutup halaman.</p>
-  `;
-  notifContainer.appendChild(notif);
+  // Buat modal di body (sekali saja)
+  const modal = document.createElement('div');
+  modal.id = 'voucherModal';
+  modal.style.position = 'fixed';
+  modal.style.top = 0;
+  modal.style.left = 0;
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.background = 'rgba(0,0,0,0.5)';
+  modal.style.display = 'none';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 9999;
 
-  // Alert terpisah, jangan masuk innerHTML
-  alert('Selamat! Anda mendapatkan voucher potongan harga. Silakan ikuti panduan di layar untuk mengirim kuisioner ke admin.');
+  const modalContent = document.createElement('div');
+  modalContent.style.background = '#fff';
+  modalContent.style.padding = '25px';
+  modalContent.style.borderRadius = '12px';
+  modalContent.style.maxWidth = '500px';
+  modalContent.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+  modalContent.style.textAlign = 'left';
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  claimBtn.addEventListener('click', function(e){
+    e.preventDefault();
+
+    // Ambil data form
+    const objRaw = localStorage.getItem(storeKey);
+    let obj = objRaw ? JSON.parse(objRaw) : getFormData();
+    obj.voucherClaimed = true;
+    localStorage.setItem(storeKey, JSON.stringify(obj));
+
+    // Tampilkan tombol final
+    finalButtons.style.display = 'flex';
+
+    // Isi konten modal
+    modalContent.innerHTML = `
+      <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
+      <p>Terima kasih sudah mengisi kuisioner. Silakan ikuti langkah berikut untuk mengirimkan data ke admin:</p>
+      <ol>
+        <li>Klik tombol <strong>Simpan</strong> untuk menyimpan kuisioner Anda.</li>
+        <li>Setelah itu klik <strong>Unduh & Kirim</strong> untuk membuat file PDF kuisioner Anda.</li>
+        <li>Buka WhatsApp ke admin: <a href="https://wa.me/6285712469835" target="_blank">Chat Admin</a>.</li>
+        <li>Lampirkan file PDF yang sudah diunduh dan kirim.</li>
+      </ol>
+      <p>Pastikan Anda menyimpan PDF sebelum menutup halaman.</p>
+      <button id="closeModalBtn" style="
+        margin-top:15px;
+        background:#007bff;
+        color:white;
+        border:none;
+        padding:10px 18px;
+        border-radius:6px;
+        cursor:pointer;
+      ">Tutup</button>
+    `;
+
+    // Tampilkan modal
+    modal.style.display = 'flex';
+
+    // Event tombol tutup modal
+    document.getElementById('closeModalBtn').addEventListener('click', function(){
+      modal.style.display = 'none';
+    });
+  });
+
+  // Tutup modal kalau klik di luar konten
+  modal.addEventListener('click', function(e){
+    if(e.target === modal) modal.style.display = 'none';
+  });
 });
-
 
         resetBtn.addEventListener('click', (e)=>{
           e.preventDefault();
@@ -753,6 +795,7 @@
   </script>
 </body>
 </html>
+
 
 
 
