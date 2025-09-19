@@ -1,257 +1,285 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OCEAN BAR & KITCHEN - Kuisioner</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCEAN BAR & KITCHEN - Kuisioner</title>
 
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<style>
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #000;
-  color: #FFD700;
-  margin: 0;
-  padding: 0;
-}
-header {
-  text-align: center;
-  padding: 20px;
-  border-bottom: 2px solid gold;
-}
-header img {
-  max-width: 200px;
-  margin: 0 auto 10px auto;
-  display: block;
-}
-h1 { font-size: 24px; color: #F0F8FF; }
-h3 { font-size: 20px; }
-.container {
-  width: 90%;
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 20px;
-  background: rgba(20,20,20,0.95);
-  border-radius: 10px;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 20px rgba(255,217,0,0.4);
-  box-sizing: border-box;
-}
-fieldset {
-  border: 2px solid #FFD700;
-  margin-bottom: 20px;
-  padding: 15px;
-  border-radius: 10px;
-  background: rgba(10,10,10,0.7);
-  box-shadow: 0 0 12px rgba(255,215,0,0.3);
-}
-legend { font-weight: bold; color: #FFD700; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
-label { display: block; margin: 8px 0; }
-input[type="text"], select, textarea {
-  width: 98%;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #FFD700;
-  background: #111;
-  color: #FFD700;
-}
-input[type="radio"], input[type="checkbox"] {
-  accent-color: gold;
-  transform: scale(1.2);
-  margin-right: 8px;
-}
-button {
-  background: linear-gradient(45deg,#FFD700,#FFA500);
-  border: none;
-  color: #000;
-  padding: 12px 20px;
-  margin: 10px 5px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
-footer { text-align:center; padding:15px; border-top:2px solid gold; margin-top:30px; }
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000;
+      color: #FFD700;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      border-bottom: 2px solid gold;
+    }
+    header img {
+      max-width: 150px;
+      display: block;
+      margin: 0 auto 10px auto;
+      padding-top: 10px;
+    }
+    h1 {
+      font-size: 24px;
+      color: #F0F8FF;
+    }
+    .lead { color: #F0F8FF; margin: 4px 0; }
+    .lead-highlight { text-shadow: 0 0 10px rgba(255,215,0,0.7); }
 
-.voucher-card{
-  display:none;
-  background: rgba(20,20,20,0.9);
-  border: 2px solid #FFD700;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 15px 0;
-  box-shadow: 0 0 15px rgba(255,215,0,0.3);
-  text-align: center;
-}
-.voucher-card img { width:90%; }
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(20,20,20,0.95);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,217,0,0.4);
+      border: 2px solid #FFD700;
+    }
 
-.btn-row {
-  display: none;
-  justify-content: center;
-  gap:12px;
-  flex-wrap: wrap;
-  margin-top:14px;
-}
+    fieldset {
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(10,10,10,0.7);
+      box-shadow: 0 0 12px rgba(255,215,0,0.3);
+    }
+    legend { color: #FFD700; font-weight: bold; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+    label { display: block; margin: 8px 0; }
+    input[type="text"], select, textarea {
+      width: 98%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #FFD700;
+      background: #111;
+      color: #FFD700;
+    }
+    input[type="radio"], input[type="checkbox"] {
+      accent-color: gold;
+      transform: scale(1.2);
+      margin-right: 8px;
+    }
+    button {
+      background: linear-gradient(45deg,#FFD700,#FFA500);
+      border: none;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 8px 5px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
 
-#voucherPopup {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.85);
-  display:none;
-  align-items:center; justify-content:center;
-  z-index:9999; color:#ffeb3b; padding:20px;
-}
-#voucherPopup .popup-content {
-  position: relative;
-  background:#222;
-  padding:30px 40px;
-  border-radius:12px;
-  max-width:500px; width:100%;
-  box-shadow:0 4px 15px rgba(0,0,0,0.5);
-}
-#closePopupBtn {
-  position:absolute; top:15px; right:15px;
-  background:#444; color:#ffeb3b;
-  border:none; border-radius:50%; width:36px; height:36px;
-  font-size:24px; font-weight:bold; cursor:pointer;
-  transition: all 0.2s;
-}
-#closePopupBtn:hover { background:#ffeb3b; color:#222; transform:scale(1.1); }
-</style>
+    footer { text-align: center; padding: 15px; border-top: 2px solid gold; margin-top: 30px; }
+
+    .voucher-card {
+      background: rgba(20,20,20,0.9);
+      border: 2px solid #FFD700;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 0 15px rgba(255,215,0,0.3);
+      text-align: center;
+      display: none;
+    }
+
+    .voucher-img { width: 90%; margin-bottom: 12px; }
+
+    .btn-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; display: none; margin-top: 14px; }
+
+    /* Popup Voucher */
+    #voucherPopup {
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.85);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 9999;
+      color:#ffeb3b;
+      font-family:sans-serif;
+      padding:20px;
+    }
+    #voucherPopup .popup-content {
+      background: #222;
+      padding: 30px 40px;
+      border-radius:12px;
+      max-width:500px;
+      width:100%;
+      box-shadow:0 4px 15px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    #voucherPopup .close-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: none; border: none; cursor:pointer;
+    }
+    #voucherPopup .close-btn::before,
+    #voucherPopup .close-btn::after {
+      content:'';
+      position:absolute;
+      left:50%; top:50%;
+      width:24px; height:2px;
+      background-color:#ffeb3b;
+      transform-origin:center;
+    }
+    #voucherPopup .close-btn::before { transform: translate(-50%,-50%) rotate(45deg); }
+    #voucherPopup .close-btn::after { transform: translate(-50%,-50%) rotate(-45deg); }
+    #voucherPopup .close-btn:hover::before,
+    #voucherPopup .close-btn:hover::after { background-color:#ffc107; }
+
+  </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <img src="logo.png" alt="Logo">
-    <h1>OCEAN BAR & KITCHEN</h1>
-    <p>📍 Jl.Ahmad Yani 34, Kutorejo, Sragen</p>
-    <p>☎️ +62 857-1246-9835</p>
-  </header>
+  <div class="container">
+    <header>
+      <img src="logo.png" alt="Logo">
+      <h1>OCEAN BAR & KITCHEN</h1>
+      <p class="lead">📍 Jl.Ahmad Yani 34, Kutorejo, Sragen</p>
+      <p class="lead">☎️ +62 857-1246-9835</p>
+      <p class="lead-highlight">Bantu kami berkembang — isi kuisioner singkat ini. Semua jawaban bersifat anonim.</p>
+    </header>
 
-  <form id="survey" autocomplete="off">
-    <fieldset>
-      <legend>Data Diri</legend>
-      <label>Nomor Meja<input type="text" id="meja"></label>
-      <label>Nama (opsional)<input type="text" id="nama"></label>
-      <label>Usia
-        <select id="usia">
-          <option value="">Pilih rentang usia</option>
-          <option><18</option><option>18–25</option><option>26–35</option><option>36–45</option><option>>45</option>
-        </select>
-      </label>
-      <label>Jenis Kelamin
-        <select id="gender">
-          <option value="">Pilih</option>
-          <option>Laki-laki</option><option>Perempuan</option><option>Prefer not to say</option>
-        </select>
-      </label>
-    </fieldset>
+    <form id="survey" autocomplete="off">
+      <fieldset>
+        <legend>Informasi Meja & Responden</legend>
+        <label>Nomor Meja<input type="text" id="meja" placeholder="Contoh: 12"></label>
+        <label>Tanggal & Jam<input type="text" id="waktu" readonly></label>
+        <label>Nama (opsional)<input type="text" id="nama" placeholder="Contoh: Budi"></label>
+        <label>Usia
+          <select id="usia">
+            <option value="">Pilih usia</option>
+            <option>&lt;18</option>
+            <option>18–25</option>
+            <option>26–35</option>
+            <option>36–45</option>
+            <option>&gt;45</option>
+          </select>
+        </label>
+        <label>Jenis Kelamin
+          <select id="gender">
+            <option value="">Pilih</option>
+            <option>Laki-laki</option>
+            <option>Perempuan</option>
+            <option>Prefer not to say</option>
+          </select>
+        </label>
+      </fieldset>
 
-    <fieldset>
-      <legend>Penilaian (1=tidak puas, 5=puas)</legend>
-      <div class="rating" data-name="rasa"></div>
-      <div class="rating" data-name="variasi"></div>
-      <div class="rating" data-name="kebersihan"></div>
-      <div class="rating" data-name="pelayanan"></div>
-      <div class="rating" data-name="kecepatan"></div>
-      <div class="rating" data-name="suasana"></div>
-      <div class="rating" data-name="harga"></div>
-    </fieldset>
+      <fieldset>
+        <legend>Penilaian (1 = Tidak Puas, 5 = Sangat Puas)</legend>
+        <div id="ratingContainer"></div>
+      </fieldset>
 
-    <fieldset>
-      <legend>Komentar</legend>
-      <label>Apa yang paling Anda sukai?<textarea id="suka"></textarea></label>
-      <label>Apa yang perlu diperbaiki?<textarea id="perbaikan"></textarea></label>
-      <label>Rekomendasi
-        <label><input type="radio" name="rekomend" value="Ya"> Ya</label>
-        <label><input type="radio" name="rekomend" value="Tidak"> Tidak</label>
-      </label>
-    </fieldset>
+      <fieldset>
+        <legend>Komentar</legend>
+        <label>Apa yang paling Anda sukai?<textarea id="suka" placeholder="Tulis komentar singkat..."></textarea></label>
+        <label>Apa yang perlu diperbaiki?<textarea id="perbaikan" placeholder="Masukkan saran..."></textarea></label>
+      </fieldset>
 
-    <div style="text-align:center;">
-      <button type="button" id="saveBtn">Simpan</button>
-    </div>
+      <div style="text-align:center; margin-top:12px;">
+        <button type="button" id="saveBtn">Simpan</button>
+      </div>
 
-    <div id="voucherCard" class="voucher-card">
-      <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
-      <img src="voucher.png" alt="Voucher">
-      <div><button type="button" id="claimVoucher">Klaim Voucher</button></div>
-    </div>
+      <div class="voucher-card" id="voucherCard">
+        <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
+        <img src="voucher.png" alt="Voucher" class="voucher-img">
+        <div><button type="button" id="claimVoucher">Klaim Voucher</button></div>
+      </div>
 
-    <div class="btn-row" id="finalButtons">
-      <button type="button" id="resetBtn">Reset</button>
-      <button type="button" id="downloadSendBtn">Download & Kirim WA</button>
-    </div>
-  </form>
+      <div class="btn-row" id="finalButtons">
+        <button type="button" id="resetBtn">Reset</button>
+        <button type="button" id="downloadSendBtn">Download & Kirim ke WA</button>
+      </div>
+    </form>
 
-  <footer>@2025 OCEAN BAR & KITCHEN — Terima kasih</footer>
-</div>
-
-<div id="voucherPopup">
-  <div class="popup-content">
-    <button id="closePopupBtn">&times;</button>
-    <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
-    <p>Silakan klik tombol <strong>Download & Kirim WA</strong> untuk membuat PDF dan mengirim ke admin.</p>
+    <footer>@2025 OCEAN BAR & KITCHEN — Terima kasih</footer>
   </div>
-</div>
 
-<script>
-(function(){
-  const storeKey = 'kuisioner_restoran_v1';
-  const adminWA = '6285712469835';
-  const voucherCard = document.getElementById('voucherCard');
-  const finalButtons = document.getElementById('finalButtons');
-  const saveBtn = document.getElementById('saveBtn');
-  const claimBtn = document.getElementById('claimVoucher');
-  const resetBtn = document.getElementById('resetBtn');
-  const downloadSendBtn = document.getElementById('downloadSendBtn');
-  const popup = document.getElementById('voucherPopup');
-  const closePopupBtn = document.getElementById('closePopupBtn');
+  <!-- Popup manual -->
+  <div id="voucherPopup">
+    <div class="popup-content">
+      <button class="close-btn" aria-label="Close"></button>
+      <h3>🎉 Klaim Voucher Berhasil! 🎉</h3>
+      <ol>
+        <li>Pastikan voucher terlihat jelas di layar.</li>
+        <li>Tekan tombol "Download & Kirim ke WA" di bawah form.</li>
+        <li>Voucher akan otomatis diunduh dan dibuka chat WhatsApp admin.</li>
+        <li>Kirim screenshot atau file PDF voucher ke admin untuk dikonfirmasi.</li>
+      </ol>
+    </div>
+  </div>
 
-  function saveData() {
-    const data = {
-      meja: document.getElementById('meja').value,
-      nama: document.getElementById('nama').value,
-      usia: document.getElementById('usia').value,
-      gender: document.getElementById('gender').value,
-      suka: document.getElementById('suka').value,
-      perbaikan: document.getElementById('perbaikan').value,
-      rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || '',
-    };
-    localStorage.setItem(storeKey, JSON.stringify(data));
-    voucherCard.style.display='block';
-    saveBtn.style.display='none';
-  }
+  <script>
+    // Tampilkan tanggal & jam saat ini
+    document.getElementById('waktu').value = new Date().toLocaleString();
 
-  function resetForm() {
-    document.getElementById('survey').reset();
-    voucherCard.style.display='none';
-    finalButtons.style.display='none';
-    saveBtn.style.display='inline-block';
-    localStorage.removeItem(storeKey);
-  }
+    // Render pertanyaan rating
+    const pertanyaan = [
+      "Kebersihan",
+      "Pelayanan",
+      "Rasa Makanan",
+      "Kenyamanan Tempat",
+      "Kecepatan Layanan"
+    ];
+    const container = document.getElementById("ratingContainer");
+    pertanyaan.forEach((q,i)=>{
+      const div = document.createElement('div');
+      div.style.marginBottom="10px";
+      div.innerHTML = `<label>${q}</label><br>
+        ${[1,2,3,4,5].map(n=>`<input type="radio" name="rating${i}" value="${n}">${n}`).join(' ')}`;
+      container.appendChild(div);
+    });
 
-  function downloadPDF(){
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const data = JSON.parse(localStorage.getItem(storeKey) || '{}');
-    let y=10;
-    doc.setFontSize(16); doc.text("Kuisioner OCEAN BAR & KITCHEN", 10, y); y+=10;
-    for(let key in data){ doc.setFontSize(12); doc.text(`${key}: ${data[key]}`, 10, y); y+=8; }
-    doc.save('kuisioner.pdf');
-    const url = `https://wa.me/${adminWA}?text=Kuisioner%20Dari%20Meja%20${encodeURIComponent(data.meja || '')}`;
-    window.open(url, '_blank');
-  }
+    const saveBtn = document.getElementById("saveBtn");
+    const voucherCard = document.getElementById("voucherCard");
+    const claimBtn = document.getElementById("claimVoucher");
+    const finalButtons = document.getElementById("finalButtons");
+    const popup = document.getElementById("voucherPopup");
+    const closePopup = popup.querySelector(".close-btn");
 
-  saveBtn.addEventListener('click', saveData);
-  claimBtn.addEventListener('click',()=>{popup.style.display='flex';});
-  closePopupBtn.addEventListener('click',()=>{popup.style.display='none'; finalButtons.style.display='flex';});
-  popup.addEventListener('click', e=>{ if(e.target===popup){popup.style.display='none'; finalButtons.style.display='flex';}});
-  resetBtn.addEventListener('click', resetForm);
-  downloadSendBtn.addEventListener('click', downloadPDF);
-})();
-</script>
+    saveBtn.addEventListener("click",()=>{
+      voucherCard.style.display="block";
+      saveBtn.disabled=true;
+    });
+
+    claimBtn.addEventListener("click",()=>{
+      popup.style.display="flex";
+      finalButtons.style.display="flex";
+    });
+
+    closePopup.addEventListener("click",()=> popup.style.display="none");
+
+    document.getElementById("resetBtn").addEventListener("click",()=>{
+      document.getElementById("survey").reset();
+      voucherCard.style.display="none";
+      finalButtons.style.display="none";
+      saveBtn.disabled=false;
+    });
+
+    document.getElementById("downloadSendBtn").addEventListener("click",()=>{
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Voucher OCEAN BAR & KITCHEN", 20, 20);
+      doc.text("🎉 Anda mendapatkan diskon spesial! 🎉", 20, 30);
+      doc.save("voucher.pdf");
+
+      const phone = "6285712469835";
+      const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
+      window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    });
+  </script>
 </body>
 </html>
