@@ -655,39 +655,36 @@
           voucherCard.style.display = 'block';
           alert('Data tersimpan sementara.');
         });
-
-claimBtn.addEventListener('click', (e)=>{
+                                 
+        claimBtn.addEventListener('click', (e)=>{
   e.preventDefault();
 
-  // Simpan data kuisioner
+  // Simpan data kuisioner & tandai voucher
   const objRaw = localStorage.getItem(storeKey);
   let obj = objRaw ? JSON.parse(objRaw) : getFormData();
   obj.voucherClaimed = true;
   localStorage.setItem(storeKey, JSON.stringify(obj));
 
   // Tampilkan tombol final (reset + download & kirim)
-  finalButtons.style.display = 'flex'; // pastikan ini tombol sudah ada di HTML
+  finalButtons.style.display = 'flex';
 
-  // Tampilkan alert standar
-  alert('Selamat! Anda mendapatkan voucher potongan harga. Silakan ikuti panduan di layar untuk mengirim kuisioner ke admin.');
+  // Tampilkan popup
+  const popup = document.getElementById('voucherPopup');
+  popup.style.display = 'flex';
 
-  // Tampilkan panduan di container notifikasi tanpa menimpa tombol
-  const notifContainer = document.getElementById('voucherNotifContainer');
-  if(notifContainer){
-    notifContainer.innerHTML = `
-      <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
-      <p>Terima kasih sudah mengisi kuisioner. Silakan ikuti langkah berikut untuk mengirimkan data ke admin:</p>
-      <ol>
-        <li>Klik tombol <strong>Simpan</strong> untuk menyimpan kuisioner Anda.</li>
-        <li>Setelah itu klik <strong>Unduh & Kirim</strong> untuk membuat file PDF kuisioner Anda.</li>
-        <li>Buka WhatsApp ke admin: <a href="https://wa.me/6285712469835" target="_blank">Chat Admin</a>.</li>
-        <li>Lampirkan file PDF yang sudah diunduh dan kirim.</li>
-      </ol>
-      <p>Pastikan Anda menyimpan PDF sebelum menutup halaman.</p>
-    `;
-  }
+  // Tombol close popup
+  const closeBtn = document.getElementById('closePopup');
+  closeBtn.onclick = () => {
+    popup.style.display = 'none';
+  };
+
+  // Klik di luar box juga bisa close
+  popup.onclick = (event) => {
+    if(event.target === popup){
+      popup.style.display = 'none';
+    }
+  };
 });
-
 
         resetBtn.addEventListener('click', (e)=>{
           e.preventDefault();
@@ -748,8 +745,52 @@ claimBtn.addEventListener('click', (e)=>{
       document.addEventListener('DOMContentLoaded', init);
     })();
   </script>
+  <!-- Popup panduan voucher -->
+<div id="voucherPopup" style="
+    display: none;
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+">
+  <div style="
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+  ">
+    <button id="closePopup" style="
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #f44336;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    ">×</button>
+    <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
+    <p>Terima kasih sudah mengisi kuisioner. Silakan ikuti langkah berikut untuk mengirimkan data ke admin:</p>
+    <ol>
+      <li>Klik tombol <strong>Simpan</strong> untuk menyimpan kuisioner Anda.</li>
+      <li>Klik tombol <strong>Unduh & Kirim</strong> untuk membuat file PDF kuisioner Anda.</li>
+      <li>Buka WhatsApp ke admin: <a href="https://wa.me/6285712469835" target="_blank">Chat Admin</a>.</li>
+      <li>Lampirkan file PDF yang sudah diunduh dan kirim.</li>
+    </ol>
+    <p>Pastikan Anda menyimpan PDF sebelum menutup halaman.</p>
+  </div>
+</div>
+
 </body>
 </html>
+
 
 
 
