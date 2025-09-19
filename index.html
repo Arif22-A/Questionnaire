@@ -657,18 +657,25 @@
         });
 
        claimBtn.addEventListener('click', (e)=>{
-          e.preventDefault();
-          // mark in localStorage that voucher is claimed
-          const objRaw = localStorage.getItem(storeKey);
-          let obj = objRaw ? JSON.parse(objRaw) : getFormData();
-          obj.voucherClaimed = true;
-          localStorage.setItem(storeKey, JSON.stringify(obj));
-          finalButtons.style.display = 'flex';
-          alert('Selamat Anda mendapatkan voucher potongan harga,
-          dan ikuti langkah berikut untuk mengirimkan hasil kuisioner,
-          setelah chat room dengan admin terbuka,klik tombol attach file 
-          > pilih dokumen > dan pilih file format pdf yang sudah terdownload/tersimpan diperangkat anda.');
-        });
+  e.preventDefault();
+  const objRaw = localStorage.getItem(storeKey);
+  let obj = objRaw ? JSON.parse(objRaw) : getFormData();
+  obj.voucherClaimed = true;
+  localStorage.setItem(storeKey, JSON.stringify(obj));
+  finalButtons.style.display = 'flex';
+
+  // tampilkan notifikasi di container khusus
+  const notifContainer = document.getElementById('voucherNotifContainer');
+  notifContainer.innerHTML = ''; // clear jika sebelumnya ada
+  const notif = document.createElement('div');
+  notif.style.background = '#fff3cd';
+  notif.style.border = '1px solid #ffeeba';
+  notif.style.padding = '20px';
+  notif.style.borderRadius = '8px';
+  notif.innerHTML = `
+  alert(Selamat Anda mendapatkan voucher potongan harga,dan ikuti langkah berikut untuk mengirimkan hasil kuisioner,setelah chat room dengan admin terbuka,klik tombol attach file > pilih dokumen > dan pilih file format pdf yang sudah terdownload/tersimpan diperangkat anda.');
+});
+
 
         resetBtn.addEventListener('click', (e)=>{
           e.preventDefault();
@@ -731,6 +738,7 @@
   </script>
 </body>
 </html>
+
 
 
 
