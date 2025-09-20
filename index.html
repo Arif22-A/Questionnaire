@@ -365,39 +365,60 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===== Fungsi PDF =====
- async function savePDF() {
-  const element = document.getElementById("kuesioner");
+async function savePDF() {
   const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
 
-  // render canvas dengan setting ringan
-  const canvas = await html2canvas(element, { 
-    scale: 1,                 // jangan terlalu besar
-    backgroundColor: "#fff",  // putih polos
-    useCORS: true
+  // --- Header (Logo + Resto Info) ---
+  const logo = document.getElementById("logoResto"); // <img id="logoResto">
+  if (logo) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = logo.width;
+    canvas.height = logo.height;
+    ctx.drawImage(logo, 0, 0);
+    const logoData = canvas.toDataURL("image/png");
+    pdf.addImage(logoData, "PNG", 10, 10, 30, 30);
+  }
+
+  pdf.setFontSize(14);
+  pdf.text("Nama Restoran", 50, 20);
+  pdf.setFontSize(10);
+  pdf.text("Jl. Mawar No. 123 - Telp: 0812-3456-7890", 50, 26);
+  pdf.text("Tagline: Kepuasan Anda Adalah Prioritas Kami", 50, 32);
+
+  // --- Data Form ---
+  let y = 50;
+  function addLine(label, value) {
+    pdf.setFontSize(11);
+    pdf.text(`${label}: ${value}`, 10, y);
+    y += 8;
+  }
+
+  addLine("No Meja", document.getElementById("meja").value);
+  addLine("Usia", document.getElementById("usia").value);
+  addLine("Gender", document.getElementById("gender").value);
+  addLine("Frekuensi Kunjungan", document.getElementById("freq").value);
+  addLine("Rekomendasi", document.querySelector("input[name='rekomend']:checked")?.value || "-");
+  addLine("Menu Favorit", document.getElementById("menu").value);
+  addLine("Yang Disukai", document.getElementById("suka").value);
+  addLine("Perlu Perbaikan", document.getElementById("perbaikan").value);
+
+  // --- Rating ---
+  pdf.text("Rating:", 10, y);
+  y += 6;
+  document.querySelectorAll("#ratingContainer > div").forEach((div, i) => {
+    const pertanyaan = div.querySelector("label").innerText;
+    const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
+    pdf.text(`- ${pertanyaan}: ${val}`, 15, y);
+    y += 6;
   });
 
-  // ubah jadi hitam putih (grayscale)
-  const ctx = canvas.getContext("2d");
-  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < imgData.data.length; i += 4) {
-    const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-    imgData.data[i]   = avg; // R
-    imgData.data[i+1] = avg; // G
-    imgData.data[i+2] = avg; // B
-  }
-  ctx.putImageData(imgData, 0, 0);
+  // --- Footer ---
+  pdf.setFontSize(9);
+  pdf.text("Terima kasih telah mengisi kuesioner 🙏", 10, 280);
 
-  const imgBase64 = canvas.toDataURL("image/png", 0.7); // kompres quality
-
-  // masukkan ke PDF
-  const pdf = new jsPDF("p", "mm", "a4");
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-  let position = 0;
-  pdf.addImage(imgBase64, "PNG", 0, position, pdfWidth, pdfHeight);
-
-  pdf.save("kuesioner_bw.pdf");
+  pdf.save("kuesioner_fast.pdf");
 }
 
   // ===== Event Simpan =====
@@ -490,6 +511,7 @@ closePopup.addEventListener("click",()=> popup.style.display="none");
 
 </body>
 </html>
+
 
 
 
