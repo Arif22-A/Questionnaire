@@ -120,9 +120,10 @@
   <div class="wrap">
     <header>
       <!-- visible logo for page -->
-      <img id="logoResto" class="logo" src="logo-png">
+      <img id="logoResto" class="logo" src="logo.png" alt="Logo Resto">
       <h1>OCEAN BAR & KITCHEN</h1>
-      <p class="lead">📍 Jl. Ahmad Yani 34, Kutorejo, Sragen — ☎️ +62 857-1246-9835</p>
+      <p class="lead">📍 Jl. Ahmad Yani 34, Kutorejo, Sragen Tengah,Sragen,Jawa Tengah 57212</p>
+      <p class="lead"> ☎️ +62 857-1246-9835</p>
       <p class="lead-small">Hallo Oceaner's..</p>
     </header>
 
@@ -168,6 +169,10 @@
             </select>
           </label>
         </fieldset>
+        <div>
+        <label class="field">Tanggal & Jam</label>
+         <input type="text" id="waktu" readonly />
+         </div>
 
         <fieldset>
           <legend>Penilaian (1 = Tidak Puas, 5 = Sangat Puas)</legend>
@@ -204,7 +209,7 @@
         <div class="voucher-card" id="voucherCard" aria-hidden="true">
           <h3 style="color:#fff">🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
           <!-- voucher image (hidden in page?) visible in card -->
-          <img id="voucherImg" src="https://dummyimage.com/640x320/f39c12/ffffff&text=Voucher+Diskon+50%25" alt="voucher" crossorigin="anonymous">
+          <img id="voucherImg" src="voucher.png" alt="Voucher Resto">
           <div style="margin-top:8px;">
             <button type="button" id="claimVoucher" class="btn" style="display:inline-flex;align-items:center;gap:8px;">
               <span id="claimText">Klaim Voucher</span>
@@ -524,6 +529,20 @@
       loadFromLocal();
     }); // DOMContentLoaded end
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const now = new Date();
+  const tanggal = now.toLocaleDateString("id-ID", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric"
+  });
+  const jam = now.toLocaleTimeString("id-ID", {
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+  });
+  document.getElementById("waktu").value = `${tanggal} - ${jam}`;
+});
+</script>
+
 </body>
 </html>
+
 
