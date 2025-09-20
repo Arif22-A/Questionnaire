@@ -176,6 +176,16 @@
             <option>Prefer not to say</option>
           </select>
         </label>
+         <div>
+            <label class="field">Frekuensi kunjungan</label>
+            <select id="freq">
+              <option value="">Pilih</option>
+              <option>Pertama kali</option>
+              <option>1–2 kali/bulan</option>
+              <option>3–5 kali/bulan</option>
+              <option>> 5 kali/bulan</option>
+            </select>
+          </div>
       </fieldset>
 
       <fieldset>
@@ -187,6 +197,7 @@
         <legend>Komentar</legend>
         <label>Apa yang paling Anda sukai?<textarea id="suka" placeholder="Tulis komentar singkat..."></textarea></label>
         <label>Apa yang perlu diperbaiki?<textarea id="perbaikan" placeholder="Masukkan saran..."></textarea></label>
+        <label>Menu seperti apa yang anda inginkan untuk kami hadirkan?<textarea id="perbaikan" placeholder="Masukkan saran..."></textarea></label>
       </fieldset>
 
       <div style="text-align:center; margin-top:12px;">
@@ -205,7 +216,7 @@
       </div>
     </form>
 
-    <footer>@2025 OCEAN BAR & KITCHEN — Terima kasih</footer>
+    <footer>@2025 OCEAN BAR & KITCHEN</footer>
   </div>
 
   <!-- Popup manual -->
@@ -216,8 +227,9 @@
       <ol>
         <li>Pastikan voucher terlihat jelas di layar.</li>
         <li>Tekan tombol "Download & Kirim ke WA" di bawah form.</li>
-        <li>Voucher akan otomatis diunduh dan dibuka chat WhatsApp admin.</li>
-        <li>Kirim screenshot atau file PDF voucher ke admin untuk dikonfirmasi.</li>
+        <li>Hasil responden akan otomatis diunduh dan dibuka chat WhatsApp admin.</li>
+        <li>Kirim responden yang sudah tersimpan diperangkat anda.</li>
+        <li>Terima Kasih</li>
       </ol>
     </div>
   </div>
@@ -230,9 +242,14 @@
     const pertanyaan = [
       "Kebersihan",
       "Pelayanan",
-      "Rasa Makanan",
+      "Kecepatan Layanan",
       "Kenyamanan Tempat",
-      "Kecepatan Layanan"
+      "Seberapa ramah dan sopan staff kami",
+      "Seberap peduli staff kami terhadap anda",
+      "Seberapa bervariasi dari daftar menu kami",
+      "Apakah harga sesuai dengan kualitas & kuantitas makanan",
+      "Rasa Makanan yang kami sajikan",
+      "Rasa minuman yang kami sajikan"
     ];
     const container = document.getElementById("ratingContainer");
     pertanyaan.forEach((q,i)=>{
@@ -283,3 +300,4 @@
   </script>
 </body>
 </html>
+
