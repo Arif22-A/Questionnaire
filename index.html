@@ -250,6 +250,7 @@
   </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
   // Tampilkan tanggal & jam saat ini
   document.getElementById('waktu').value = new Date().toLocaleString();
 
@@ -364,6 +365,9 @@
     voucherCard.style.display="block";
     saveBtn.disabled=true;
 
+    console.log("Simpan Berhasil ✅");
+    alert("Simpan Berhasil!");
+
     savePDF(); // langsung buat PDF
   });
 
@@ -382,6 +386,7 @@
     finalButtons.style.display="none";
     saveBtn.disabled=false;
     localStorage.removeItem("kuesioner");
+    console.log("Form berhasil direset 🗑️");
   });
 
   // ===== Event Download & Kirim WA =====
@@ -392,10 +397,12 @@
   });
 
   // auto load saat halaman dibuka
-  window.onload = loadFromLocal;
+  loadFromLocal();
+});
 </script>
 </body>
 </html>
+
 
 
 
