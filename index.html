@@ -1,559 +1,528 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OCEAN BAR & KITCHEN</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OCEAN BAR & KITCHEN — Kuesioner</title>
 
   <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #000;
-      color: #FFD700;
-      margin: 0;
-      padding: 0;
+    :root {
+      --bg: #080808;
+      --card: #0f0f0f;
+      --gold: #FFD700;
+      --muted: #cfcfcf;
     }
-    header {
-      text-align: center;
-      padding: 20px;
-      border-bottom: 2px solid gold;
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--gold);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    header img {
-      max-width: 150px;
-      display: block;
-      margin: 0 auto 10px auto;
-      padding-top: 10px;
-    }
-    h1 {
-      font-size: 24px;
-      color: #F0F8FF;
-    }
-    .lead { color: #F0F8FF; margin: 4px 0; }
-    .lead-highlight { text-shadow: 0 0 10px rgba(255,215,0,0.7); }
-
-    .container {
-      width: 90%;
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 20px;
-      background: rgba(20,20,20,0.95);
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,217,0,0.4);
-      border: 2px solid #FFD700;
-    }
-
-    fieldset {
-      border: 2px solid #FFD700;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      padding: 15px;
-      background: rgba(10,10,10,0.7);
-      box-shadow: 0 0 12px rgba(255,215,0,0.3);
-    }
-    legend { color: #FFD700; font-weight: bold; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
-    label { display: block; margin: 8px 0; }
-    input[type="text"], select, textarea {
-      width: 98%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #FFD700;
-      background: #111;
-      color: #FFD700;
-    }
-    input[type="radio"], input[type="checkbox"] {
-      accent-color: gold;
-      transform: scale(1.2);
-      margin-right: 8px;
-    }
-    button {
-      background: linear-gradient(45deg,#FFD700,#FFA500);
-      border: none;
-      color: #000;
-      padding: 12px 20px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: bold;
-      margin: 8px 5px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
-
-    footer { text-align: center; padding: 15px; border-top: 2px solid gold; margin-top: 30px; }
-
-    .voucher-card {
-      background: rgba(20,20,20,0.9);
-      border: 2px solid #FFD700;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 15px 0;
-      box-shadow: 0 0 15px rgba(255,215,0,0.3);
-      text-align: center;
-      display: none;
-    }
-
-    .voucher-img { width: 90%; margin-bottom: 12px; }
-
-    .btn-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; display: none; margin-top: 14px; }
-
-    /* Popup Voucher */
-    #voucherPopup {
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.85);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index: 9999;
-      color:#ffeb3b;
-      font-family:sans-serif;
+    .wrap{
+      max-width:980px;
+      margin:18px auto;
       padding:20px;
     }
-    #voucherPopup .popup-content {
-      background: #222;
-      padding: 30px 40px;
-      border-radius:12px;
-      max-width:500px;
-      width:100%;
-      box-shadow:0 4px 15px rgba(0,0,0,0.5);
-      position: relative;
+    header{
+      text-align:center;
+      padding:18px;
+      border-bottom:2px solid var(--gold);
+      color:#F0F8FF;
     }
-    #voucherPopup .close-btn {
-      position: absolute;
-      top: 12px; right: 12px;
-      width: 32px; height: 32px;
-      background: none; border: none; cursor:pointer;
+    header img.logo {
+      width:140px;
+      height:auto;
+      display:block;
+      margin:0 auto 10px;
     }
-    #voucherPopup .close-btn::before,
-    #voucherPopup .close-btn::after {
-      content:'';
-      position:absolute;
-      left:50%; top:50%;
-      width:24px; height:2px;
-      background-color:#ffeb3b;
-      transform-origin:center;
-    }
-    #voucherPopup .close-btn::before { transform: translate(-50%,-50%) rotate(45deg); }
-    #voucherPopup .close-btn::after { transform: translate(-50%,-50%) rotate(-45deg); }
-    #voucherPopup .close-btn:hover::before,
-    #voucherPopup .close-btn:hover::after { background-color:#ffc107; }
-.page-break {
-  page-break-before: always;
-}
+    h1{ margin:4px 0 6px; font-size:20px; color:#F0F8FF; }
+    .lead{ color:#F0F8FF; margin:2px 0; font-size:14px; }
+    .lead-small{ color:var(--muted); font-size:13px; margin-top:6px; }
 
+    .card{
+      background: rgba(15,15,15,0.95);
+      border: 2px solid var(--gold);
+      box-shadow: 0 6px 24px rgba(255,215,0,0.06);
+      border-radius:12px;
+      padding:18px;
+      margin-top:18px;
+    }
+    fieldset{
+      border:1px dashed rgba(255,215,0,0.15);
+      padding:12px;
+      border-radius:8px;
+      margin-bottom:14px;
+      color:var(--gold);
+    }
+    legend{ color:var(--gold); padding:0 6px; font-weight:600; }
+    label{ display:block; margin:8px 0; color:#F0F8FF; }
+    input[type="text"], input[type="number"], select, textarea {
+      width:100%;
+      padding:8px;
+      border-radius:6px;
+      border:1px solid rgba(255,215,0,0.18);
+      background:#0b0b0b;
+      color:var(--gold);
+      box-sizing:border-box;
+      font-size:14px;
+    }
+    textarea{ min-height:72px; resize:vertical; }
+
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .btn {
+      background: linear-gradient(45deg,var(--gold), #ffa500);
+      border:none;
+      color:#000;
+      padding:10px 16px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      box-shadow:0 6px 18px rgba(255,215,0,0.12);
+    }
+    .btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; box-shadow:none; }
+    .muted{ color:var(--muted); font-size:13px; }
+
+    .voucher-card{
+      background: linear-gradient(180deg, rgba(255,240,200,0.04), rgba(10,10,10,0.05));
+      padding:14px;
+      border-radius:10px;
+      border:1px solid rgba(255,215,0,0.15);
+      margin-top:14px;
+      display:none;
+      text-align:center;
+    }
+    .voucher-card img{ max-width:320px; width:90%; display:block; margin:8px auto; border-radius:6px; }
+
+    .btn-row{ display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; display:none; }
+
+    /* popup */
+    #voucherPopup{
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background: rgba(0,0,0,0.7); z-index:9999;
+    }
+    .popup-content{
+      background:#111; color:var(--gold); padding:20px; border-radius:10px; width:min(520px,94%);
+      box-shadow:0 10px 40px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,215,0,0.12);
+    }
+    .close-btn{ background:none;border:none;color:var(--gold); font-size:18px; cursor:pointer; position:absolute; right:18px; top:14px;}
+    .loading-inline{ display:inline-block; margin-left:8px; color:#fff; background:#222; padding:6px 8px; border-radius:999px; font-size:13px; }
+
+    footer{ text-align:center; color:var(--muted); margin-top:18px; padding:10px; border-top:1px solid rgba(255,215,0,0.04); }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrap">
     <header>
-      <img src="logo.png" alt="Logo">
+      <!-- visible logo for page -->
+      <img id="logoResto" class="logo" src="https://dummyimage.com/300x120/003366/ffd700&text=OCEAN+BAR+%26+KITCHEN" alt="logo" crossorigin="anonymous">
       <h1>OCEAN BAR & KITCHEN</h1>
-      <p class="lead">📍 Jl.Ahmad Yani 34, Kutorejo, Sragen</p>
-      <p class="lead">☎️ +62 857-1246-9835</p>
-      <br>
-       <p class="lead">Hallo Oceaner's..</p>
-      <p class="lead-highlight">Bantu kami berkembang — isi kuesioner singkat ini. Semua jawaban bersifat anonim.</p>
+      <p class="lead">📍 Jl. Ahmad Yani 34, Kutorejo, Sragen — ☎️ +62 857-1246-9835</p>
+      <p class="lead-small">Tagline: Rasa Bintang 5, Harga Bersahabat</p>
     </header>
 
-  <form id="survey" autocomplete="off">
-  <!-- Informasi Meja & Responden -->
-  <fieldset>
-    <legend>Informasi Meja & Responden</legend>
-    <label>
-      Nomor Meja
-      <input type="text" id="meja" placeholder="Contoh: 12">
-    </label>
-    <label>
-      Tanggal & Jam
-      <input type="text" id="waktu" readonly>
-    </label>
-    <label>
-      Nama (opsional)
-      <input type="text" id="nama" placeholder="Contoh: Budi">
-    </label>
-    <label>
-      Usia
-      <select id="usia">
-        <option value="">Pilih usia</option>
-        <option>&lt;18</option>
-        <option>18–25</option>
-        <option>26–35</option>
-        <option>36–45</option>
-        <option>&gt;45</option>
-      </select>
-    </label>
-    <label>
-      Jenis Kelamin
-      <select id="gender">
-        <option value="">Pilih</option>
-        <option>Laki-laki</option>
-        <option>Perempuan</option>
-        <option>Prefer not to say</option>
-      </select>
-    </label>
-    <div>
-      <label class="field">Frekuensi kunjungan</label>
-      <select id="freq">
-        <option value="">Pilih</option>
-        <option>Pertama kali</option>
-        <option>1–2 kali/bulan</option>
-        <option>3–5 kali/bulan</option>
-        <option>&gt; 5 kali/bulan</option>
-      </select>
+    <div class="card">
+      <form id="survey" autocomplete="off">
+        <fieldset>
+          <legend>Informasi Meja & Responden</legend>
+          <label>Nama (opsional)
+            <input type="text" id="nama" placeholder="Contoh: Budi">
+          </label>
+          <label>Nomor Meja
+            <input type="text" id="meja" placeholder="Contoh: 12">
+          </label>
+          <div class="row">
+            <label style="flex:1">Usia
+              <select id="usia">
+                <option value="">Pilih usia</option>
+                <option value="<18">&lt;18</option>
+                <option value="18-25">18–25</option>
+                <option value="26-35">26–35</option>
+                <option value="36-45">36–45</option>
+                <option value=">45">&gt;45</option>
+              </select>
+            </label>
+
+            <label style="flex:1">Jenis Kelamin
+              <select id="gender">
+                <option value="">Pilih</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </label>
+          </div>
+
+          <label>Frekuensi kunjungan
+            <select id="freq">
+              <option value="">Pilih</option>
+              <option value="Pertama kali">Pertama kali</option>
+              <option value="1-2 kali/bulan">1–2 kali/bulan</option>
+              <option value="3-5 kali/bulan">3–5 kali/bulan</option>
+              <option value=">5 kali/bulan">&gt; 5 kali/bulan</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Penilaian (1 = Tidak Puas, 5 = Sangat Puas)</legend>
+          <div id="ratingContainer"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Komentar</legend>
+          <label>Apa yang paling Anda sukai?
+            <textarea id="suka" placeholder="Tulis komentar singkat..."></textarea>
+          </label>
+          <label>Apa yang perlu diperbaiki?
+            <textarea id="perbaikan" placeholder="Masukkan saran..."></textarea>
+          </label>
+          <label>Menu seperti apa yang anda inginkan untuk kami hadirkan?
+            <textarea id="menu" placeholder="Masukkan saran..."></textarea>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Rekomendasi</legend>
+          <label class="muted">Apakah Anda akan merekomendasikan restoran kami?</label>
+          <div class="row" style="margin-top:8px;">
+            <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="rekomend" value="Ya"> Ya</label>
+            <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="rekomend" value="Tidak"> Tidak</label>
+          </div>
+        </fieldset>
+
+        <div style="text-align:center; margin-top:8px;">
+          <button type="button" id="saveBtn" class="btn">Simpan</button>
+          <span id="loadingSpinner" class="loading-inline" style="display:none">⏳ Menyimpan...</span>
+        </div>
+
+        <div class="voucher-card" id="voucherCard" aria-hidden="true">
+          <h3 style="color:#fff">🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
+          <!-- voucher image (hidden in page?) visible in card -->
+          <img id="voucherImg" src="https://dummyimage.com/640x320/f39c12/ffffff&text=Voucher+Diskon+50%25" alt="voucher" crossorigin="anonymous">
+          <div style="margin-top:8px;">
+            <button type="button" id="claimVoucher" class="btn" style="display:inline-flex;align-items:center;gap:8px;">
+              <span id="claimText">Klaim Voucher</span>
+              <span id="claimSpinner" class="loading-inline" style="display:none">⏳</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="btn-row" id="finalButtons" aria-hidden="true">
+          <button type="button" id="resetBtn" class="btn" style="background:#e74c3c">Reset</button>
+          <button type="button" id="downloadSendBtn" class="btn" style="background:#2ecc71">Download & Kirim ke WA</button>
+        </div>
+      </form>
     </div>
-  </fieldset>
 
-  <!-- Penilaian -->
-  <fieldset>
-    <legend>Penilaian (1 = Tidak Puas, 5 = Sangat Puas)</legend>
-    <div id="ratingContainer"></div>
-  </fieldset>
-
-  <!-- Komentar -->
-  <label>
-    Apa yang paling Anda sukai?
-    <textarea id="suka" placeholder="Tulis komentar singkat..."></textarea>
-  </label>
-
-  <label>
-    Apa yang perlu diperbaiki?
-    <textarea id="perbaikan" placeholder="Masukkan saran..."></textarea>
-  </label>
-
-  <label>
-    Menu seperti apa yang anda inginkan untuk kami hadirkan?
-    <textarea id="menu" placeholder="Masukkan saran..."></textarea>
-  </label>
-
-  <!-- Rekomendasi -->
-  <fieldset>
-    <legend>Rekomendasi</legend>
-    <label class="field">Apakah Anda akan merekomendasikan restoran kami?</label>
-    <div style="display:flex;gap:12px">
-      <label style="display:flex;gap:8px;align-items:center">
-        <input type="radio" name="rekomend" value="Ya" required> Ya
-      </label>
-      <label style="display:flex;gap:8px;align-items:center">
-        <input type="radio" name="rekomend" value="Tidak" required> Tidak
-      </label>
+    <div id="voucherPopup" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999;">
+      <div class="popup-content">
+        <button class="close-btn" aria-label="Tutup">✕</button>
+        <h3 style="margin-top:0;color:#fff">🎉 Klaim Voucher Berhasil! 🎉</h3>
+        <ol style="color:var(--muted);line-height:1.5">
+          <li>Pastikan voucher terlihat jelas di layar.</li>
+          <li>Tekan tombol "Download & Kirim ke WA" untuk mengirim ke admin.</li>
+          <li>File PDF akan otomatis terunduh.</li>
+        </ol>
+      </div>
     </div>
-  </fieldset>
 
-  <!-- Tombol -->
-<div style="text-align:center; margin-top:12px;">
-  <button type="button" id="saveBtn">Simpan</button>
-  <span id="loadingSpinner" style="display:none;margin-left:10px;">⏳ Loading...</span>
-</div>
-
-  <!-- Voucher Card -->
-  <div class="voucher-card" id="voucherCard">
-    <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
-    <img src="voucher.png" alt="Voucher" class="voucher-img">
-    <div>
-     <button id="claimVoucher">
-  <span id="claimText">Klaim Voucher</span>
-  <span id="claimSpinner" style="display:none">⏳</span>
-</button>
-
-    </div>
+    <footer>
+      ©2025 OCEAN BAR & KITCHEN — All rights reserved
+    </footer>
   </div>
 
-  <!-- Final Buttons -->
-  <div class="btn-row" id="finalButtons">
-    <button type="button" id="resetBtn">Reset</button>
-    <button type="button" id="downloadSendBtn">Download & Kirim ke WA</button>
-  </div>
-</form>
+  <script>
+    // ====== Init ======
+    document.addEventListener("DOMContentLoaded", () => {
+      // rating pertanyaan
+      const pertanyaan = [
+        "Kebersihan",
+        "Pelayanan",
+        "Kecepatan Layanan",
+        "Kenyamanan Tempat",
+        "Seberapa ramah dan sopan staff kami",
+        "Seberapa peduli staff kami terhadap anda",
+        "Seberapa bervariasi daftar menu kami",
+        "Apakah harga sesuai dengan kualitas & kuantitas makanan",
+        "Rasa makanan yang kami sajikan",
+        "Rasa minuman yang kami sajikan"
+      ];
 
-<footer>@2025 OCEAN BAR & KITCHEN</footer>
+      const ratingContainer = document.getElementById("ratingContainer");
+      pertanyaan.forEach((q,i)=>{
+        const wrap = document.createElement("div");
+        wrap.style.marginBottom = "10px";
+        wrap.innerHTML = `<label style="font-weight:600;display:block;color:#fff">${i+1}. ${q}</label>
+          ${[1,2,3,4,5].map(n=>
+            `<label style="margin-right:8px; color:var(--muted)"><input type="radio" name="rating${i}" value="${n}"> ${n}</label>`
+          ).join('')}`;
+        ratingContainer.appendChild(wrap);
+      });
 
-<!-- Popup Voucher -->
-<div id="voucherPopup">
-  <div class="popup-content">
-    <button class="close-btn" aria-label="Close"></button>
-    <h3>🎉 Klaim Voucher Berhasil! 🎉</h3>
-    <ol>
-      <li>Pastikan voucher terlihat jelas di layar.</li>
-      <li>Tekan tombol "Download & Kirim ke WA" di bawah form.</li>
-      <li>Hasil responden akan otomatis diunduh dan dibuka chat WhatsApp admin.</li>
-      <li>Kirim responden yang sudah tersimpan di perangkat anda.</li>
-      <li>Terima Kasih</li>
-    </ol>
-  </div>
-</div>
+      // element refs
+      const saveBtn = document.getElementById("saveBtn");
+      const spinner = document.getElementById("loadingSpinner");
+      const voucherCard = document.getElementById("voucherCard");
+      const claimBtn = document.getElementById("claimVoucher");
+      const claimSpinner = document.getElementById("claimSpinner");
+      const claimText = document.getElementById("claimText");
+      const finalButtons = document.getElementById("finalButtons");
+      const popup = document.getElementById("voucherPopup");
+      const closePopup = popup.querySelector(".close-btn");
+      const downloadSendBtn = document.getElementById("downloadSendBtn");
+      const resetBtn = document.getElementById("resetBtn");
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // ============ Waktu =============
-  document.getElementById('waktu').value = new Date().toLocaleString();
+      // helper: convert image element to base64 (waits for load) and handle CORS
+      function imgToBase64(imgEl) {
+        return new Promise((resolve) => {
+          if(!imgEl || !imgEl.src) return resolve(null);
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = imgEl.src + (imgEl.src.indexOf('?') === -1 ? '' : '');
+          // if already loaded and naturalWidth > 0, proceed
+          if (imgEl.complete && imgEl.naturalWidth) {
+            try {
+              const canvas = document.createElement('canvas');
+              canvas.width = imgEl.naturalWidth;
+              canvas.height = imgEl.naturalHeight;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(imgEl, 0, 0);
+              return resolve(canvas.toDataURL('image/png'));
+            } catch (e) {
+              return resolve(null);
+            }
+          }
+          img.onload = () => {
+            try {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              resolve(canvas.toDataURL('image/png'));
+            } catch(e) {
+              resolve(null);
+            }
+          };
+          img.onerror = () => resolve(null);
+        });
+      }
 
-  // ============ Pertanyaan Rating =============
-  const pertanyaan = [
-    "Kebersihan",
-    "Pelayanan",
-    "Kecepatan Layanan",
-    "Kenyamanan Tempat",
-    "Seberapa ramah dan sopan staff kami",
-    "Seberapa peduli staff kami terhadap anda",
-    "Seberapa bervariasi dari daftar menu kami",
-    "Apakah harga sesuai dengan kualitas & kuantitas makanan",
-    "Rasa Makanan yang kami sajikan",
-    "Rasa minuman yang kami sajikan"
-  ];
-  const container = document.getElementById("ratingContainer");
-  pertanyaan.forEach((q,i)=>{
-    const div = document.createElement('div');
-    div.style.marginBottom="10px";
-    div.innerHTML = `<label>${q}</label><br>
-      ${[1,2,3,4,5].map(n=>`<input type="radio" name="rating${i}" value="${n}">${n}`).join(' ')}`;
-    container.appendChild(div);
+      // localStorage save/load
+      function saveToLocal() {
+        const data = {
+          nama: document.getElementById("nama").value || "",
+          meja: document.getElementById("meja").value || "",
+          usia: document.getElementById("usia").value || "",
+          gender: document.getElementById("gender").value || "",
+          freq: document.getElementById("freq").value || "",
+          rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || "",
+          suka: document.getElementById("suka").value || "",
+          perbaikan: document.getElementById("perbaikan").value || "",
+          menu: document.getElementById("menu").value || "",
+          ratings: pertanyaan.map((q,i)=> document.querySelector(`input[name="rating${i}"]:checked`)?.value || "")
+        };
+        localStorage.setItem("ocean_kuesioner", JSON.stringify(data));
+      }
+
+      function loadFromLocal() {
+        const raw = localStorage.getItem("ocean_kuesioner");
+        if(!raw) return;
+        try {
+          const data = JSON.parse(raw);
+          document.getElementById("nama").value = data.nama || "";
+          document.getElementById("meja").value = data.meja || "";
+          document.getElementById("usia").value = data.usia || "";
+          document.getElementById("gender").value = data.gender || "";
+          document.getElementById("freq").value = data.freq || "";
+          if(data.rekomend){
+            const el = document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`);
+            if(el) el.checked = true;
+          }
+          document.getElementById("suka").value = data.suka || "";
+          document.getElementById("perbaikan").value = data.perbaikan || "";
+          document.getElementById("menu").value = data.menu || "";
+          (data.ratings || []).forEach((val,i)=>{
+            if(val){
+              const r = document.querySelector(`input[name="rating${i}"][value="${val}"]`);
+              if(r) r.checked = true;
+            }
+          });
+        } catch(e){ /* ignore parse error */ }
+      }
+
+      // lightweight PDF writer using jsPDF (text + images via canvas)
+     // otomatis isi field tanggal & jam saat halaman dibuka
+  window.addEventListener("load", () => {
+    const now = new Date();
+    const tanggal = now.toLocaleDateString("id-ID", {
+      weekday: "long", year: "numeric", month: "long", day: "numeric"
+    });
+    const jam = now.toLocaleTimeString("id-ID", {
+      hour: "2-digit", minute: "2-digit", second: "2-digit"
+    });
+    document.getElementById("waktu").value = `${tanggal} - ${jam}`;
   });
 
-  // elemen penting
-  const saveBtn = document.getElementById("saveBtn");
-  const spinner = document.getElementById("loadingSpinner");
-  const voucherCard = document.getElementById("voucherCard");
-  const claimBtn = document.getElementById("claimVoucher");
-  const finalButtons = document.getElementById("finalButtons");
-  const popup = document.getElementById("voucherPopup");
-  const closePopup = popup.querySelector(".close-btn");
+  async function savePDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
 
-  // ============ LocalStorage =============
-  function saveToLocal() {
-    const data = {
-      meja: document.getElementById("meja").value,
-      usia: document.getElementById("usia").value,
-      gender: document.getElementById("gender").value,
-      freq: document.getElementById("freq").value,
-      rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || "",
-      suka: document.getElementById("suka").value,
-      perbaikan: document.getElementById("perbaikan").value,
-      menu: document.getElementById("menu").value,
-      ratings: []
-    };
-    pertanyaan.forEach((q,i)=>{
-      const rate = document.querySelector(`input[name="rating${i}"]:checked`);
-      data.ratings.push(rate ? rate.value : "");
-    });
-    localStorage.setItem("kuesioner", JSON.stringify(data));
-  }
+    // ================= HEADER =================
+    pdf.setFontSize(16);
+    pdf.text("OCEAN BAR & KITCHEN", 10, 15);
+    pdf.setFontSize(11);
+    pdf.text("Jl. Kenangan No.123, Jakarta", 10, 22);
+    pdf.text("Telp: 021-123456 | IG: @oceanbar", 10, 28);
+    pdf.setFontSize(10);
+    pdf.text("Tagline: Rasa Bintang 5, Harga Merakyat", 10, 34);
+    pdf.line(10, 38, 200, 38); // garis pemisah
 
-  function loadFromLocal() {
-    const saved = localStorage.getItem("kuesioner");
-    if(!saved) return;
-    const data = JSON.parse(saved);
-    document.getElementById("meja").value = data.meja || "";
-    document.getElementById("usia").value = data.usia || "";
-    document.getElementById("gender").value = data.gender || "";
-    document.getElementById("freq").value = data.freq || "";
-    if(data.rekomend){
-      document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`).checked = true;
-    }
-    document.getElementById("suka").value = data.suka || "";
-    document.getElementById("perbaikan").value = data.perbaikan || "";
-    document.getElementById("menu").value = data.menu || "";
-    data.ratings.forEach((val,i)=>{
-      if(val){
-        document.querySelector(`input[name="rating${i}"][value="${val}"]`).checked = true;
+    // ================= ISI FORM =================
+    let y = 48;
+    const waktu = document.getElementById("waktu").value || "-";
+    const nama = document.getElementById("nama").value || "-";
+    const meja = document.getElementById("meja").value || "-";
+    const usia = document.getElementById("usia").value || "-";
+    const gender = document.getElementById("gender").value || "-";
+    const freq = document.getElementById("freq").value || "-";
+    const rekomend = document.querySelector('input[name="rekomend"]:checked')?.value || "-";
+    const suka = document.getElementById("suka").value || "-";
+    const perbaikan = document.getElementById("perbaikan").value || "-";
+    const menu = document.getElementById("menu").value || "-";
+
+    pdf.setFontSize(12);
+    pdf.text(`Tanggal & Jam   : ${waktu}`, 10, y); y+=8;
+    pdf.text(`Nama Pengisi    : ${nama}`, 10, y); y+=8;
+    pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
+    pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
+    pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
+    pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
+    pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
+
+    // ================= RATING =================
+    pdf.setFontSize(12);
+    pdf.text("Penilaian:", 10, y); y+=8;
+    pertanyaan.forEach((q, i) => {
+      const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
+      pdf.setFontSize(10);
+      pdf.text(`${i+1}. ${q} = ${val}`, 15, y);
+      y += 6;
+      if (y > 260) { 
+        pdf.addPage(); 
+        y = 20; 
       }
     });
-  }
-async function getBase64Image(imgElement) {
-  return new Promise((resolve, reject) => {
-    if (!imgElement) return resolve(null);
+    y+=8;
 
-    const img = new Image();
-    img.crossOrigin = "anonymous"; // penting biar nggak blank
-    img.src = imgElement.src;
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-      resolve(canvas.toDataURL("image/png"));
-    };
-    img.onerror = () => resolve(null);
-  });
-}
-
-  // ============ PDF Ringan ============
-// Helper konversi <img> ke base64
-function toDataURL(imgElement) {
-  return new Promise((resolve) => {
-    if (!imgElement) return resolve(null);
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = imgElement.src;
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-      resolve(canvas.toDataURL("image/png"));
-    };
-    img.onerror = () => resolve(null);
-  });
-}
-
-async function savePDF() {
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("p","mm","a4");
-
-  // ambil data tambahan
-  const namaPengisi = document.getElementById("nama")?.value || "-";
-  const logoImg = document.getElementById("logoResto");
-  const voucherImg = document.getElementById("voucherImg");
-
-  // konversi gambar jadi base64
-  const logoData = await toDataURL(logoImg);
-  const voucherData = await toDataURL(voucherImg);
-
-  // HEADER + LOGO
-  if (logoData) {
-    pdf.addImage(logoData, "PNG", 160, 10, 40, 25); // pojok kanan atas
-  }
-  pdf.setFontSize(16);
-  pdf.text("OCEAN BAR & KITCHEN", 10, 15);
-  pdf.setFontSize(11);
-  pdf.text("Jl. Kenangan No.123, Jakarta", 10, 22);
-  pdf.text("Telp: 021-123456 | IG: @oceanbar", 10, 28);
-  pdf.setFontSize(10);
-  pdf.text("Tagline: Rasa Bintang 5, Harga Merakyat", 10, 34);
-
-  pdf.line(10, 38, 200, 38); // garis pemisah
-
-  // NAMA PENGISI
-  let y = 48;
-  pdf.setFontSize(12);
-  pdf.text(`Nama Pengisi    : ${namaPengisi}`, 10, y);
-  y += 10;
-
-  // ISI FORM
-  const meja = document.getElementById("meja").value || "-";
-  const usia = document.getElementById("usia").value || "-";
-  const gender = document.getElementById("gender").value || "-";
-  const freq = document.getElementById("freq").value || "-";
-  const rekomend = document.querySelector('input[name="rekomend"]:checked')?.value || "-";
-  const suka = document.getElementById("suka").value || "-";
-  const perbaikan = document.getElementById("perbaikan").value || "-";
-  const menu = document.getElementById("menu").value || "-";
-
-  pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
-  pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
-  pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
-  pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
-  pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
-
-  // RATING
-  pdf.setFontSize(12);
-  pdf.text("Penilaian:", 10, y); y+=8;
-  pertanyaan.forEach((q,i)=>{
-    const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
+    // ================= SUKA / PERBAIKAN / MENU =================
+    pdf.setFontSize(12);
+    pdf.text("Yang Disukai:", 10, y); y+=6;
     pdf.setFontSize(10);
-    pdf.text(`${i+1}. ${q} = ${val}`, 15, y);
-    y += 6;
-    if (y > 260) { pdf.addPage(); y = 20; }
-  });
-  y+=8;
+    pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
 
-  // SUKA / PERBAIKAN / MENU
-  pdf.setFontSize(12);
-  pdf.text("Yang Disukai:", 10, y); y+=6;
-  pdf.setFontSize(10);
-  pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
+    pdf.setFontSize(12);
+    pdf.text("Perlu Perbaikan:", 10, y); y+=6;
+    pdf.setFontSize(10);
+    pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
 
-  pdf.setFontSize(12);
-  pdf.text("Perlu Perbaikan:", 10, y); y+=6;
-  pdf.setFontSize(10);
-  pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
+    pdf.setFontSize(12);
+    pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
+    pdf.setFontSize(10);
+    pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
 
-  pdf.setFontSize(12);
-  pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
-  pdf.setFontSize(10);
-  pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
+    // ================= FOOTER =================
+    pdf.setFontSize(10);
+    pdf.text("Terima kasih sudah mengisi kuesioner 🙏", 10, 285);
 
-  // GAMBAR VOUCHER
-  if (voucherData) {
-    pdf.addImage(voucherData, "PNG", 60, y, 90, 60);
-    y += 70;
+    // Simpan file
+    pdf.save("kuesioner.pdf");
   }
 
-  // FOOTER
-  pdf.setFontSize(10);
-  pdf.text("Terima kasih sudah mengisi kuesioner", 10, 285);
+      // ========== Save button event ==========
+      saveBtn.addEventListener("click", () => {
+        // validation
+        const meja = document.getElementById("meja").value.trim();
+        const usia = document.getElementById("usia").value;
+        const gender = document.getElementById("gender").value;
+        const freq = document.getElementById("freq").value;
+        const rekomend = document.querySelector('input[name="rekomend"]:checked');
+        let allRated = true;
+        for(let i=0;i<pertanyaan.length;i++){
+          if(!document.querySelector(`input[name="rating${i}"]:checked`)){
+            allRated = false; break;
+          }
+        }
+        if(!meja || !usia || !gender || !freq || !rekomend || !allRated){
+          alert("Harap lengkapi semua field, termasuk rating & rekomendasi.");
+          return;
+        }
 
-  pdf.save("kuesioner.pdf");
-}
+        // show loading small + simulate quick save
+        saveBtn.disabled = true;
+        spinner.style.display = "inline-block";
+        setTimeout(()=>{
+          saveToLocal();
+          voucherCard.style.display = "block";
+          finalButtons.style.display = "flex";
+          saveBtn.disabled = false;
+          spinner.style.display = "none";
+          alert("Simpan Berhasil ✅");
+        }, 700);
+      });
 
-    saveBtn.disabled = true;
-    spinner.style.display = "inline-block";
-    setTimeout(()=>{
-      saveToLocal();
-      voucherCard.style.display="block";
-      console.log("Simpan Berhasil ✅");
-      alert("Simpan Berhasil!");
-      spinner.style.display = "none";
-      saveBtn.disabled = false;
-    }, 800);
-  });
+      // ========== Claim voucher event ==========
+      claimBtn.addEventListener("click", async () => {
+        claimBtn.disabled = true;
+        claimSpinner.style.display = "inline-block";
+        claimText.style.display = "none";
 
-  // ============ Event Claim Voucher ============
-  claimBtn.addEventListener("click", async ()=>{
-    claimBtn.disabled = true;
-    document.getElementById("claimText").style.display = "none";
-    document.getElementById("claimSpinner").style.display = "inline";
-    await savePDF();
-    popup.style.display="flex";
-    finalButtons.style.display="flex";
-    claimBtn.disabled = false;
-    document.getElementById("claimText").style.display = "inline";
-    document.getElementById("claimSpinner").style.display = "none";
-  });
+        // render lightweight PDF with images
+        try{
+          await savePDF();
+          // show popup
+          popup.style.display = "flex";
+        }catch(e){
+          console.error(e);
+          alert("Terjadi kesalahan saat membuat PDF.");
+        }finally{
+          claimBtn.disabled = false;
+          claimSpinner.style.display = "none";
+          claimText.style.display = "inline";
+        }
+      });
 
-  closePopup.addEventListener("click",()=> popup.style.display="none");
+      // ========== popup close ==========
+      closePopup.addEventListener("click", ()=> popup.style.display = "none");
 
-  // ============ Event Reset ============
-  document.getElementById("resetBtn").addEventListener("click",()=>{
-    document.getElementById("survey").reset();
-    voucherCard.style.display="none";
-    finalButtons.style.display="none";
-    saveBtn.disabled=false;
-    localStorage.removeItem("kuesioner");
-    console.log("Form berhasil direset 🗑️");
-  });
+      // ========== Download & send WA ==========
+      downloadSendBtn.addEventListener("click", ()=>{
+        const phone = "6285712469835";
+        const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
+        // open whatsapp chat (web)
+        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+      });
 
-  // ============ Event Download & Kirim WA ============
-  document.getElementById("downloadSendBtn").addEventListener("click",()=>{
-    const phone = "6285712469835";
-    const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
-    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-  });
+      // ========== Reset ==========
+      resetBtn.addEventListener("click", ()=>{
+        if(confirm("Reset semua isi form dan hapus data lokal?")){
+          document.getElementById("survey").reset();
+          voucherCard.style.display = "none";
+          finalButtons.style.display = "none";
+          localStorage.removeItem("ocean_kuesioner");
+          alert("Form dan data lokal sudah direset.");
+        }
+      });
 
-  // Auto load
-  loadFromLocal();
-});
-</script>
+      // load previously saved
+      loadFromLocal();
+    }); // DOMContentLoaded end
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
