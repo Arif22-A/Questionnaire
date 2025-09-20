@@ -563,11 +563,6 @@ async function savePDF() {
   pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
   pdf.setFontSize(10);
   pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
-
-  // ===== Voucher image =====
-  const voucherEl = document.querySelector("#voucherCard img");
-  if (voucherEl) {
-    try {
      // ===== Voucher image =====
 const voucherEl = document.querySelector("#voucherCard img");
 if (voucherEl) {
@@ -585,8 +580,6 @@ if (voucherEl) {
     console.error("Gagal konversi voucher:", e);
   }
 }
-
-
   // ===== Footer =====
   pdf.setFontSize(10);
 
@@ -678,3 +671,4 @@ if (voucherEl) {
 </script>
 </body>
 </html>
+
