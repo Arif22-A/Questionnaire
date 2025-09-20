@@ -28,12 +28,32 @@
       margin:18px auto;
       padding:20px;
     }
-    header{
-      text-align:center;
-      padding:18px;
-      border-bottom:2px solid var(--gold);
-      color:#F0F8FF;
-    }
+   .header-container {
+  border: 2px solid gold; /* garis emas */
+  border-radius: 12px;
+  padding: 15px 20px;
+  text-align: center;
+  background: rgba(20,20,20,0.9);
+  margin-bottom: 20px;
+}
+
+.header-container h1 {
+  margin: 8px 0;
+  color: #FFD700;
+}
+
+.header-container .lead {
+  margin: 4px 0;
+  color: #fff;
+  font-size: 13px;
+}
+
+.header-container .lead-small {
+  margin: 4px 0;
+  color: #fff;
+  font-size: 11px;
+}
+
     header img.logo {
       width:140px;
       height:auto;
@@ -114,19 +134,31 @@
     .loading-inline{ display:inline-block; margin-left:8px; color:#fff; background:#222; padding:6px 8px; border-radius:999px; font-size:13px; }
 
     footer{ text-align:center; color:var(--muted); margin-top:18px; padding:10px; border-top:1px solid rgba(255,215,0,0.04); }
+    .rating-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 kolom */
+  gap: 12px 20px; /* jarak antar item */
+}
+
+.rating-grid > div {
+  background: rgba(30,30,30,0.7);
+  padding: 10px;
+  border-radius: 8px;
+  color: #FFD700;
+}
+
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <!-- visible logo for page -->
-      <img id="logoResto" class="logo" src="logo.png" alt="Logo Resto">
-      <h1>OCEAN BAR & KITCHEN</h1>
-      <p class="lead">📍 Jl. Ahmad Yani 34, Kutorejo, Sragen Tengah,Sragen,Jawa Tengah 57212</p>
-      <p class="lead"> ☎️ +62 857-1246-9835</p>
-      <p class="lead-small">Hallo Oceaner's..</p>
-    </header>
-
+  <header class="header-container">
+  <!-- visible logo for page -->
+  <img id="logoResto" class="logo" src="logo.png" alt="Logo Resto">
+  <h1>OCEAN BAR & KITCHEN</h1>
+  <p class="lead">📍 Jl. Ahmad Yani 34, Kutorejo, Sragen Tengah, Sragen, Jawa Tengah 57212</p>
+  <p class="lead">☎️ +62 857-1246-9835</p>
+  <p class="lead-small">Hallo Oceaner's..</p>
+</header>
     <div class="card">
       <form id="survey" autocomplete="off">
         <fieldset>
@@ -174,10 +206,11 @@
          <input type="text" id="waktu" readonly />
          </div>
 
-        <fieldset>
-          <legend>Penilaian (1 = Tidak Puas, 5 = Sangat Puas)</legend>
-          <div id="ratingContainer"></div>
-        </fieldset>
+       <fieldset>
+  <legend>Penilaian (1 = Tidak Puas, 5 = Sangat Puas)</legend>
+  <div id="ratingContainer" class="rating-grid"></div>
+</fieldset>
+
 
         <fieldset>
           <legend>Komentar</legend>
@@ -246,30 +279,31 @@
     // ====== Init ======
     document.addEventListener("DOMContentLoaded", () => {
       // rating pertanyaan
-      const pertanyaan = [
-        "Kebersihan",
-        "Pelayanan",
-        "Kecepatan Layanan",
-        "Kenyamanan Tempat",
-        "Seberapa ramah dan sopan staff kami",
-        "Seberapa peduli staff kami terhadap anda",
-        "Seberapa bervariasi daftar menu kami",
-        "Apakah harga sesuai dengan kualitas & kuantitas makanan",
-        "Rasa makanan yang kami sajikan",
-        "Rasa minuman yang kami sajikan"
-      ];
+    const pertanyaan = [
+  "Kebersihan",
+  "Pelayanan",
+  "Kecepatan Layanan",
+  "Kenyamanan Tempat",
+  "Seberapa ramah dan sopan staff kami",
+  "Seberapa peduli staff kami terhadap anda",
+  "Seberapa bervariasi dari daftar menu kami",
+  "Apakah harga sesuai kualitas & kuantitas makanan",
+  "Rasa Makanan yang kami sajikan",
+  "Rasa Minuman yang kami sajikan"
+];
 
-      const ratingContainer = document.getElementById("ratingContainer");
-      pertanyaan.forEach((q,i)=>{
-        const wrap = document.createElement("div");
-        wrap.style.marginBottom = "10px";
-        wrap.innerHTML = `<label style="font-weight:600;display:block;color:#fff">${i+1}. ${q}</label>
-          ${[1,2,3,4,5].map(n=>
-            `<label style="margin-right:8px; color:var(--muted)"><input type="radio" name="rating${i}" value="${n}"> ${n}</label>`
-          ).join('')}`;
-        ratingContainer.appendChild(wrap);
-      });
+const container = document.getElementById("ratingContainer");
 
+pertanyaan.forEach((q,i) => {
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <label>${i+1}. ${q}</label><br>
+    ${[1,2,3,4,5].map(n => `
+      <input type="radio" name="rating${i}" value="${n}">${n}
+    `).join('')}
+  `;
+  container.appendChild(div);
+});
       // element refs
       const saveBtn = document.getElementById("saveBtn");
       const spinner = document.getElementById("loadingSpinner");
@@ -544,5 +578,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
