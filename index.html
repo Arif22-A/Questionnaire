@@ -238,10 +238,11 @@
     </div>
   </fieldset>
 
-  <!-- Tombol utama -->
-  <div style="text-align:center; margin-top:12px;">
-    <button type="button" id="saveBtn">Simpan</button>
-  </div>
+  <!-- Tombol -->
+<div style="text-align:center; margin-top:12px;">
+  <button type="button" id="saveBtn">Simpan</button>
+  <span id="loadingSpinner" style="display:none;margin-left:10px;">⏳ Loading...</span>
+</div>
 
   <!-- Voucher Card -->
   <div class="voucher-card" id="voucherCard">
@@ -304,6 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const saveBtn = document.getElementById("saveBtn");
+  const spinner = document.getElementById("loadingSpinner");
   const voucherCard = document.getElementById("voucherCard");
   const claimBtn = document.getElementById("claimVoucher");
   const finalButtons = document.getElementById("finalButtons");
@@ -311,49 +313,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const closePopup = popup.querySelector(".close-btn");
 
   // ===== Fungsi LocalStorage =====
- function saveToLocal() {
-  const data = {
-    meja: document.getElementById("meja").value,
-    usia: document.getElementById("usia").value,
-    gender: document.getElementById("gender").value,
-    freq: document.getElementById("freq").value,
-    rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || "",
-    suka: document.getElementById("suka").value,
-    perbaikan: document.getElementById("perbaikan").value,
-    menu: document.getElementById("menu").value,
-    ratings: []
-  };
+  function saveToLocal() {
+    const data = {
+      meja: document.getElementById("meja").value,
+      usia: document.getElementById("usia").value,
+      gender: document.getElementById("gender").value,
+      freq: document.getElementById("freq").value,
+      rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || "",
+      suka: document.getElementById("suka").value,
+      perbaikan: document.getElementById("perbaikan").value,
+      menu: document.getElementById("menu").value,
+      ratings: []
+    };
 
-  pertanyaan.forEach((q,i)=>{
-    const rate = document.querySelector(`input[name="rating${i}"]:checked`);
-    data.ratings.push(rate ? rate.value : "");
-  });
+    pertanyaan.forEach((q,i)=>{
+      const rate = document.querySelector(`input[name="rating${i}"]:checked`);
+      data.ratings.push(rate ? rate.value : "");
+    });
 
-  localStorage.setItem("kuesioner", JSON.stringify(data));
-}
-
-function loadFromLocal() {
-  const saved = localStorage.getItem("kuesioner");
-  if(!saved) return;
-  const data = JSON.parse(saved);
-
-  document.getElementById("meja").value = data.meja || "";
-  document.getElementById("usia").value = data.usia || "";
-  document.getElementById("gender").value = data.gender || "";
-  document.getElementById("freq").value = data.freq || "";
-  if(data.rekomend){
-    document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`).checked = true;
+    localStorage.setItem("kuesioner", JSON.stringify(data));
   }
-  document.getElementById("suka").value = data.suka || "";
-  document.getElementById("perbaikan").value = data.perbaikan || "";
-  document.getElementById("menu").value = data.menu || "";
 
-  data.ratings.forEach((val,i)=>{
-    if(val){
-      document.querySelector(`input[name="rating${i}"][value="${val}"]`).checked = true;
+  function loadFromLocal() {
+    const saved = localStorage.getItem("kuesioner");
+    if(!saved) return;
+    const data = JSON.parse(saved);
+
+    document.getElementById("meja").value = data.meja || "";
+    document.getElementById("usia").value = data.usia || "";
+    document.getElementById("gender").value = data.gender || "";
+    document.getElementById("freq").value = data.freq || "";
+    if(data.rekomend){
+      document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`).checked = true;
     }
-  });
-}
+    document.getElementById("suka").value = data.suka || "";
+    document.getElementById("perbaikan").value = data.perbaikan || "";
+    document.getElementById("menu").value = data.menu || "";
+
+    data.ratings.forEach((val,i)=>{
+      if(val){
+        document.querySelector(`input[name="rating${i}"][value="${val}"]`).checked = true;
+      }
+    });
+  }
 
   // ===== Fungsi PDF =====
   async function savePDF() {
@@ -392,14 +394,24 @@ function loadFromLocal() {
       return;
     }
 
-    saveToLocal(); // simpan ke localStorage
-    voucherCard.style.display="block";
-    saveBtn.disabled=true;
+    // tampilkan indikator loading
+    saveBtn.disabled = true;
+    spinner.style.display = "inline-block";
 
-    console.log("Simpan Berhasil ✅");
-    alert("Simpan Berhasil!");
+    // simulasi proses simpan
+    setTimeout(async ()=>{
+      saveToLocal(); // simpan ke localStorage
+      voucherCard.style.display="block";
 
-    savePDF(); // langsung buat PDF
+      console.log("Simpan Berhasil ✅");
+      alert("Simpan Berhasil!");
+
+      await savePDF(); // langsung buat PDF
+
+      // matikan indikator
+      spinner.style.display = "none";
+      saveBtn.disabled = false;
+    }, 1200); 
   });
 
   // ===== Event Claim Voucher =====
@@ -431,8 +443,10 @@ function loadFromLocal() {
   loadFromLocal();
 });
 </script>
+
 </body>
 </html>
+
 
 
 
