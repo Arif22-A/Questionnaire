@@ -551,8 +551,8 @@ async function savePDF() {
       }
       pdf.setFontSize(12);
       pdf.text("Voucher:", 10, y); y+=6;
-      pdf.addImage(voucherBase64, "PNG", 10, y, 80, 80); 
-      y += 90;
+     pdf.addImage(voucherBase64, "PNG", 10, y, 120, 40); 
+      y += 50;
     } catch(e) {
       console.error("Gagal konversi voucher:", e);
     }
@@ -652,6 +652,7 @@ async function savePDF() {
 
 </body>
 </html>
+
 
 
 
