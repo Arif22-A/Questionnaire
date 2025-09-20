@@ -7,7 +7,7 @@
 
   <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -249,91 +249,153 @@
     </div>
   </div>
 
-  <script>
-    // Tampilkan tanggal & jam saat ini
-    document.getElementById('waktu').value = new Date().toLocaleString();
+<script>
+  // Tampilkan tanggal & jam saat ini
+  document.getElementById('waktu').value = new Date().toLocaleString();
 
-    // Render pertanyaan rating
-    const pertanyaan = [
-      "Kebersihan",
-      "Pelayanan",
-      "Kecepatan Layanan",
-      "Kenyamanan Tempat",
-      "Seberapa ramah dan sopan staff kami",
-      "Seberap peduli staff kami terhadap anda",
-      "Seberapa bervariasi dari daftar menu kami",
-      "Apakah harga sesuai dengan kualitas & kuantitas makanan",
-      "Rasa Makanan yang kami sajikan",
-      "Rasa minuman yang kami sajikan"
-    ];
-    const container = document.getElementById("ratingContainer");
-    pertanyaan.forEach((q,i)=>{
-      const div = document.createElement('div');
-      div.style.marginBottom="10px";
-      div.innerHTML = `<label>${q}</label><br>
-        ${[1,2,3,4,5].map(n=>`<input type="radio" name="rating${i}" value="${n}">${n}`).join(' ')}`;
-      container.appendChild(div);
-    });
-
-    const saveBtn = document.getElementById("saveBtn");
-    const voucherCard = document.getElementById("voucherCard");
-    const claimBtn = document.getElementById("claimVoucher");
-    const finalButtons = document.getElementById("finalButtons");
-    const popup = document.getElementById("voucherPopup");
-    const closePopup = popup.querySelector(".close-btn");
-
-    saveBtn.addEventListener("click",()=>{
-  const meja = document.getElementById("meja").value.trim();
-  const usia = document.getElementById("usia").value;
-  const gender = document.getElementById("gender").value;
-  const freq = document.getElementById("freq").value;
-  const rekomend = document.querySelector('input[name="rekomend"]:checked');
-
-  // cek rating
-  let allRated = true;
+  // Render pertanyaan rating
+  const pertanyaan = [
+    "Kebersihan",
+    "Pelayanan",
+    "Kecepatan Layanan",
+    "Kenyamanan Tempat",
+    "Seberapa ramah dan sopan staff kami",
+    "Seberap peduli staff kami terhadap anda",
+    "Seberapa bervariasi dari daftar menu kami",
+    "Apakah harga sesuai dengan kualitas & kuantitas makanan",
+    "Rasa Makanan yang kami sajikan",
+    "Rasa minuman yang kami sajikan"
+  ];
+  const container = document.getElementById("ratingContainer");
   pertanyaan.forEach((q,i)=>{
-    if(!document.querySelector(`input[name="rating${i}"]:checked`)) {
-      allRated = false;
-    }
+    const div = document.createElement('div');
+    div.style.marginBottom="10px";
+    div.innerHTML = `<label>${q}</label><br>
+      ${[1,2,3,4,5].map(n=>`<input type="radio" name="rating${i}" value="${n}">${n}`).join(' ')}`;
+    container.appendChild(div);
   });
 
-  if(!meja || !usia || !gender || !freq || !rekomend || !allRated){
-    alert("Harap lengkapi semua field, termasuk rating & rekomendasi.");
-    return;
+  const saveBtn = document.getElementById("saveBtn");
+  const voucherCard = document.getElementById("voucherCard");
+  const claimBtn = document.getElementById("claimVoucher");
+  const finalButtons = document.getElementById("finalButtons");
+  const popup = document.getElementById("voucherPopup");
+  const closePopup = popup.querySelector(".close-btn");
+
+  // ===== Fungsi LocalStorage =====
+  function saveToLocal() {
+    const data = {
+      meja: document.getElementById("meja").value,
+      usia: document.getElementById("usia").value,
+      gender: document.getElementById("gender").value,
+      freq: document.getElementById("freq").value,
+      rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || "",
+      komentar: document.getElementById("komentar").value,
+      ratings: []
+    };
+
+    pertanyaan.forEach((q,i)=>{
+      const rate = document.querySelector(`input[name="rating${i}"]:checked`);
+      data.ratings.push(rate ? rate.value : "");
+    });
+
+    localStorage.setItem("kuesioner", JSON.stringify(data));
   }
 
-  voucherCard.style.display="block";
-  saveBtn.disabled=true;
-});
+  function loadFromLocal() {
+    const saved = localStorage.getItem("kuesioner");
+    if(!saved) return;
+    const data = JSON.parse(saved);
 
+    document.getElementById("meja").value = data.meja || "";
+    document.getElementById("usia").value = data.usia || "";
+    document.getElementById("gender").value = data.gender || "";
+    document.getElementById("freq").value = data.freq || "";
+    if(data.rekomend){
+      document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`).checked = true;
+    }
+    document.getElementById("komentar").value = data.komentar || "";
 
-    claimBtn.addEventListener("click",()=>{
-      popup.style.display="flex";
-      finalButtons.style.display="flex";
+    data.ratings.forEach((val,i)=>{
+      if(val){
+        document.querySelector(`input[name="rating${i}"][value="${val}"]`).checked = true;
+      }
+    });
+  }
+
+  // ===== Fungsi PDF =====
+  async function savePDF() {
+    const { jsPDF } = window.jspdf;
+    const element = document.getElementById("survey"); // render seluruh form + voucher
+    const canvas = await html2canvas(element, { scale:2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p","mm","a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("kuesioner.pdf");
+  }
+
+  // ===== Event Simpan =====
+  saveBtn.addEventListener("click",()=>{
+    const meja = document.getElementById("meja").value.trim();
+    const usia = document.getElementById("usia").value;
+    const gender = document.getElementById("gender").value;
+    const freq = document.getElementById("freq").value;
+    const rekomend = document.querySelector('input[name="rekomend"]:checked');
+
+    // cek rating
+    let allRated = true;
+    pertanyaan.forEach((q,i)=>{
+      if(!document.querySelector(`input[name="rating${i}"]:checked`)) {
+        allRated = false;
+      }
     });
 
-    closePopup.addEventListener("click",()=> popup.style.display="none");
+    if(!meja || !usia || !gender || !freq || !rekomend || !allRated){
+      alert("Harap lengkapi semua field, termasuk rating & rekomendasi.");
+      return;
+    }
 
-    document.getElementById("resetBtn").addEventListener("click",()=>{
-      document.getElementById("survey").reset();
-      voucherCard.style.display="none";
-      finalButtons.style.display="none";
-      saveBtn.disabled=false;
-    });
+    saveToLocal(); // simpan ke localStorage
+    voucherCard.style.display="block";
+    saveBtn.disabled=true;
 
-    document.getElementById("downloadSendBtn").addEventListener("click",()=>{
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.text("Voucher OCEAN BAR & KITCHEN", 20, 20);
-      doc.text("🎉 Anda mendapatkan diskon spesial! 🎉", 20, 30);
-      doc.save("voucher.pdf");
+    savePDF(); // langsung buat PDF
+  });
 
-      const phone = "6285712469835";
-      const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
-      window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-    });
-  </script>
+  // ===== Event Claim Voucher =====
+  claimBtn.addEventListener("click",()=>{
+    popup.style.display="flex";
+    finalButtons.style.display="flex";
+  });
+
+  closePopup.addEventListener("click",()=> popup.style.display="none");
+
+  // ===== Event Reset =====
+  document.getElementById("resetBtn").addEventListener("click",()=>{
+    document.getElementById("survey").reset();
+    voucherCard.style.display="none";
+    finalButtons.style.display="none";
+    saveBtn.disabled=false;
+    localStorage.removeItem("kuesioner");
+  });
+
+  // ===== Event Download & Kirim WA =====
+  document.getElementById("downloadSendBtn").addEventListener("click",()=>{
+    const phone = "6285712469835";
+    const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+  });
+
+  // auto load saat halaman dibuka
+  window.onload = loadFromLocal;
+</script>
 </body>
 </html>
+
 
 
