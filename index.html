@@ -362,74 +362,104 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ============ PDF Ringan ============
-  async function savePDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p","mm","a4");
+async function savePDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
 
-    // HEADER
-    pdf.setFontSize(16);
-    pdf.text("OCEAN BAR & KITCHEN", 10, 15);
-    pdf.setFontSize(11);
-    pdf.text("Jl. Kenangan No.123, Jakarta", 10, 22);
-    pdf.text("Telp: 021-123456 | IG: @oceanbar", 10, 28);
-    pdf.setFontSize(10);
-    pdf.text("Tagline: Rasa Bintang 5, Harga Merakyat", 10, 34);
+  // ambil data tambahan
+  const namaPengisi = document.getElementById("nama")?.value || "-";
+  const logoImg = document.getElementById("logoResto");      // <img id="logoResto">
+  const voucherImg = document.getElementById("voucherImg");  // <img id="voucherImg">
 
-    pdf.line(10, 38, 200, 38); // garis pemisah
-
-    // ISI FORM
-    let y = 48;
-    const meja = document.getElementById("meja").value || "-";
-    const usia = document.getElementById("usia").value || "-";
-    const gender = document.getElementById("gender").value || "-";
-    const freq = document.getElementById("freq").value || "-";
-    const rekomend = document.querySelector('input[name="rekomend"]:checked')?.value || "-";
-    const suka = document.getElementById("suka").value || "-";
-    const perbaikan = document.getElementById("perbaikan").value || "-";
-    const menu = document.getElementById("menu").value || "-";
-
-    pdf.setFontSize(12);
-    pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
-    pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
-    pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
-    pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
-    pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
-
-    // RATING
-    pdf.setFontSize(12);
-    pdf.text("Penilaian:", 10, y); y+=8;
-    pertanyaan.forEach((q,i)=>{
-      const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
-      pdf.setFontSize(10);
-      pdf.text(`${i+1}. ${q} = ${val}`, 15, y);
-      y += 6;
-      if (y > 260) { pdf.addPage(); y = 20; }
-    });
-    y+=8;
-
-    // SUKA / PERBAIKAN / MENU
-    pdf.setFontSize(12);
-    pdf.text("Yang Disukai:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
-
-    pdf.setFontSize(12);
-    pdf.text("Perlu Perbaikan:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
-
-    pdf.setFontSize(12);
-    pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
-
-    // FOOTER
-    pdf.setFontSize(10);
-    pdf.text("Terima kasih sudah mengisi kuesioner 🙏", 10, 285);
-
-    pdf.save("kuesioner.pdf");
+  // HEADER
+  if (logoImg) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = logoImg.naturalWidth;
+    canvas.height = logoImg.naturalHeight;
+    ctx.drawImage(logoImg, 0, 0);
+    const logoData = canvas.toDataURL("image/png");
+    pdf.addImage(logoData, "PNG", 160, 10, 40, 25); // posisi kanan atas
   }
 
+  pdf.setFontSize(16);
+  pdf.text("OCEAN BAR & KITCHEN", 10, 15);
+  pdf.setFontSize(11);
+  pdf.text("Jl. Kenangan No.123, Jakarta", 10, 22);
+  pdf.text("Telp: 021-123456 | IG: @oceanbar", 10, 28);
+  pdf.setFontSize(10);
+  pdf.text("Tagline: Rasa Bintang 5, Harga Merakyat", 10, 34);
+
+  pdf.line(10, 38, 200, 38); // garis pemisah
+
+  // NAMA PENGISI
+  let y = 48;
+  pdf.setFontSize(12);
+  pdf.text(`Nama Pengisi    : ${namaPengisi}`, 10, y);
+  y += 10;
+
+  // ISI FORM
+  const meja = document.getElementById("meja").value || "-";
+  const usia = document.getElementById("usia").value || "-";
+  const gender = document.getElementById("gender").value || "-";
+  const freq = document.getElementById("freq").value || "-";
+  const rekomend = document.querySelector('input[name="rekomend"]:checked')?.value || "-";
+  const suka = document.getElementById("suka").value || "-";
+  const perbaikan = document.getElementById("perbaikan").value || "-";
+  const menu = document.getElementById("menu").value || "-";
+
+  pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
+  pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
+  pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
+  pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
+  pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
+
+  // RATING
+  pdf.setFontSize(12);
+  pdf.text("Penilaian:", 10, y); y+=8;
+  pertanyaan.forEach((q,i)=>{
+    const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
+    pdf.setFontSize(10);
+    pdf.text(`${i+1}. ${q} = ${val}`, 15, y);
+    y += 6;
+    if (y > 260) { pdf.addPage(); y = 20; }
+  });
+  y+=8;
+
+  // SUKA / PERBAIKAN / MENU
+  pdf.setFontSize(12);
+  pdf.text("Yang Disukai:", 10, y); y+=6;
+  pdf.setFontSize(10);
+  pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
+
+  pdf.setFontSize(12);
+  pdf.text("Perlu Perbaikan:", 10, y); y+=6;
+  pdf.setFontSize(10);
+  pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
+
+  pdf.setFontSize(12);
+  pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
+  pdf.setFontSize(10);
+  pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
+
+  // TAMBAH GAMBAR VOUCHER
+  if (voucherImg) {
+    const canvasV = document.createElement("canvas");
+    const ctxV = canvasV.getContext("2d");
+    canvasV.width = voucherImg.naturalWidth;
+    canvasV.height = voucherImg.naturalHeight;
+    ctxV.drawImage(voucherImg, 0, 0);
+    const voucherData = canvasV.toDataURL("image/png");
+    pdf.addImage(voucherData, "PNG", 60, y, 90, 60); // ukuran bisa diatur
+    y += 70;
+  }
+
+  // FOOTER
+  pdf.setFontSize(10);
+  pdf.text("Terima kasih sudah mengisi kuesioner 🙏", 10, 285);
+
+  pdf.save("kuesioner.pdf");
+}
   // ============ Event Simpan ============
   saveBtn.addEventListener("click",()=>{
     const meja = document.getElementById("meja").value.trim();
@@ -497,6 +527,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
