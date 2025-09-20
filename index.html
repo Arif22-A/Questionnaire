@@ -148,15 +148,14 @@
 }
 /* ========== TOMBOL EMAS ========== */
 button.golden {
-  background: linear-gradient(135deg, #d4af37, #ffd700);
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 9999px; /* pill shape */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, opacity 0.2s ease;
+background: linear-gradient(45deg,var(--gold), #ffa500);
+      border:none;
+      color:#000;
+      padding:10px 16px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      box-shadow:0 6px 18px rgba(255,215,0,0.12);
 }
 
 button.golden:hover {
@@ -171,14 +170,30 @@ button.golden span {
 </head>
 <body>
   <div class="wrap">
-  <header class="header-container">
-  <!-- visible logo for page -->
-  <img id="logoResto" class="logo" src="logo.png" alt="Logo Resto">
-  <h1>OCEAN BAR & KITCHEN</h1>
-  <p class="lead">📍 Jl. Ahmad Yani 34, Kutorejo, Sragen Tengah, Sragen, Jawa Tengah 57212</p>
-  <p class="lead">☎️ +62 857-1246-9835</p>
-  <p class="lead-small">Hallo Oceaner's..</p>
+  <header id="restoHeader">
+  <div class="logo">
+    <img src="logo.png" alt="Logo Restoran" id="restoLogo">
+  </div>
+  <div class="resto-info">
+    <h1 id="restoName">OCEAN BAR &amp; KITCHEN</h1>
+    
+    <!-- Alamat -->
+    <p id="restoAddress1" class="lead">📍 Jl. Ahmad Yani 34, Kutorejo, Sragen Tengah</p>
+    <p id="restoAddress2" class="lead">Kec. Sragen, Kab. Sragen, Jawa Tengah 57212</p>
+    
+    <!-- Kontak -->
+    <p id="restoContact" class="lead">☎️ +62 857-1246-9835</p>
+    
+    <br>
+    
+    <!-- Tagline / highlight -->
+    <p id="restoTagline" class="lead-highlight">
+     HALLO OCEANER'S...
+    </p>
+    <p class="lead"> Bantu kami berkembang — isi kuesioner singkat ini,Semua jawaban bersifat anonim.</p>
+  </div>
 </header>
+
     <div class="card">
       <form id="survey" autocomplete="off">
         <fieldset>
@@ -416,76 +431,112 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("waktu").value = `${tanggal} - ${jam}`;
 
   // ====== PDF Export ======
-  async function savePDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "mm", "a4");
+async function savePDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
 
-    pdf.setFontSize(16);
-    pdf.text("OCEAN BAR & KITCHEN", 10, 15);
-    pdf.setFontSize(11);
-    pdf.text("Jl. Kenangan No.123, Jakarta", 10, 22);
-    pdf.text("Telp: 021-123456 | IG: @oceanbar", 10, 28);
+  // ===== Ambil data header dari DOM =====
+  const namaResto   = document.getElementById("namaResto")?.innerText || "";
+  const alamatResto = document.getElementById("alamatResto")?.innerText || "";
+  const kontakResto = document.getElementById("kontakResto")?.innerText || "";
+  const taglineResto= document.getElementById("taglineResto")?.innerText || "";
+  const logoEl      = document.getElementById("logoResto");
+
+  // ===== Tambahkan logo kalau ada =====
+  if (logoEl) {
+    const logoBase64 = await imgToBase64(logoEl);
+    if (logoBase64) {
+      pdf.addImage(logoBase64, "PNG", 160, 10, 30, 30); // kanan atas
+    }
+  }
+
+  // ===== Tambahkan teks header =====
+  pdf.setFontSize(16);
+  pdf.text(namaResto, 10, 15);
+  pdf.setFontSize(11);
+  pdf.text(alamatResto, 10, 22);
+  pdf.text(kontakResto, 10, 28);
+  pdf.setFontSize(10);
+  pdf.text(`Tagline: ${taglineResto}`, 10, 34);
+
+  pdf.line(10, 38, 200, 38); // garis pemisah
+
+  // ===== Data form =====
+  let y = 48;
+  const waktu     = document.getElementById("waktu").value || "-";
+  const nama      = document.getElementById("nama").value || "-";
+  const meja      = document.getElementById("meja").value || "-";
+  const usia      = document.getElementById("usia").value || "-";
+  const gender    = document.getElementById("gender").value || "-";
+  const freq      = document.getElementById("freq").value || "-";
+  const rekomend  = document.querySelector('input[name="rekomend"]:checked')?.value || "-";
+  const suka      = document.getElementById("suka").value || "-";
+  const perbaikan = document.getElementById("perbaikan").value || "-";
+  const menu      = document.getElementById("menu").value || "-";
+
+  pdf.setFontSize(12);
+  pdf.text(`Tanggal & Jam   : ${waktu}`, 10, y); y+=8;
+  pdf.text(`Nama Pengisi    : ${nama}`, 10, y); y+=8;
+  pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
+  pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
+  pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
+  pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
+  pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
+
+  // ===== Rating =====
+  pdf.setFontSize(12);
+  pdf.text("Penilaian:", 10, y); y+=8;
+  pertanyaan.forEach((q, i) => {
+    const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
     pdf.setFontSize(10);
-    pdf.text("Tagline: Rasa Bintang 5, Harga Merakyat", 10, 34);
-    pdf.line(10, 38, 200, 38);
+    pdf.text(`${i + 1}. ${q} = ${val}`, 15, y);
+    y += 6;
+    if (y > 260) {
+      pdf.addPage();
+      y = 20;
+    }
+  });
+  y+=8;
 
-    let y = 48;
-    const waktu = document.getElementById("waktu").value || "-";
-    const nama = document.getElementById("nama").value || "-";
-    const meja = document.getElementById("meja").value || "-";
-    const usia = document.getElementById("usia").value || "-";
-    const gender = document.getElementById("gender").value || "-";
-    const freq = document.getElementById("freq").value || "-";
-    const rekomend =
-      document.querySelector('input[name="rekomend"]:checked')?.value || "-";
-    const suka = document.getElementById("suka").value || "-";
-    const perbaikan = document.getElementById("perbaikan").value || "-";
-    const menu = document.getElementById("menu").value || "-";
+  // ===== Suka / Perbaikan / Menu =====
+  pdf.setFontSize(12);
+  pdf.text("Yang Disukai:", 10, y); y+=6;
+  pdf.setFontSize(10);
+  pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
 
-    pdf.setFontSize(12);
-    pdf.text(`Tanggal & Jam   : ${waktu}`, 10, y); y+=8;
-    pdf.text(`Nama Pengisi    : ${nama}`, 10, y); y+=8;
-    pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
-    pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
-    pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
-    pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
-    pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
+  pdf.setFontSize(12);
+  pdf.text("Perlu Perbaikan:", 10, y); y+=6;
+  pdf.setFontSize(10);
+  pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
 
-    pdf.setFontSize(12);
-    pdf.text("Penilaian:", 10, y); y+=8;
-    pertanyaan.forEach((q, i) => {
-      const val =
-        document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
-      pdf.setFontSize(10);
-      pdf.text(`${i + 1}. ${q} = ${val}`, 15, y);
-      y += 6;
-      if (y > 260) {
+  pdf.setFontSize(12);
+  pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
+  pdf.setFontSize(10);
+  pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
+
+  // ===== Voucher image =====
+  const voucherEl = document.querySelector("#voucherCard img");
+  if (voucherEl) {
+    const voucherBase64 = await imgToBase64(voucherEl);
+    if (voucherBase64) {
+      if (y > 200) { // biar ga nabrak footer
         pdf.addPage();
         y = 20;
       }
-    });
-    y+=8;
-
-    pdf.setFontSize(12);
-    pdf.text("Yang Disukai:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
-
-    pdf.setFontSize(12);
-    pdf.text("Perlu Perbaikan:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
-
-    pdf.setFontSize(12);
-    pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
-
-    pdf.setFontSize(10);
-    pdf.text("Terima kasih sudah mengisi kuesioner 🙏", 10, 285);
-
-    pdf.save("kuesioner.pdf");
+      pdf.setFontSize(12);
+      pdf.text("Voucher:", 10, y); y+=6;
+      pdf.addImage(voucherBase64, "PNG", 10, y, 80, 80); // atur ukuran sesuai kebutuhan
+      y += 90;
+    }
   }
+
+  // ===== Footer =====
+  pdf.setFontSize(10);
+  pdf.text("Terima kasih sudah mengisi kuesioner", 10, 285);
+
+  // Simpan file
+  pdf.save("kuesioner.pdf");
+}
 
   // ====== Save Button ======
   saveBtn.addEventListener("click", () => {
@@ -574,6 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
