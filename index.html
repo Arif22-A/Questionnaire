@@ -291,337 +291,319 @@ button.golden:hover {
     </footer>
   </div>
 
-  <script>
-    // ====== Init ======
-    document.addEventListener("DOMContentLoaded", () => {
-      // rating pertanyaan
+<script>
+  // ====== Init ======
+  document.addEventListener("DOMContentLoaded", () => {
+    // rating pertanyaan
     const pertanyaan = [
-  "Kebersihan",
-  "Pelayanan",
-  "Kecepatan Layanan",
-  "Kenyamanan Tempat",
-  "Seberapa ramah dan sopan staff kami",
-  "Seberapa peduli staff kami terhadap anda",
-  "Seberapa bervariasi dari daftar menu kami",
-  "Apakah harga sesuai kualitas & kuantitas makanan",
-  "Rasa Makanan yang kami sajikan",
-  "Rasa Minuman yang kami sajikan"
-];
+      "Kebersihan",
+      "Pelayanan",
+      "Kecepatan Layanan",
+      "Kenyamanan Tempat",
+      "Seberapa ramah dan sopan staff kami",
+      "Seberapa peduli staff kami terhadap anda",
+      "Seberapa bervariasi dari daftar menu kami",
+      "Apakah harga sesuai kualitas & kuantitas makanan",
+      "Rasa Makanan yang kami sajikan",
+      "Rasa Minuman yang kami sajikan"
+    ];
 
-const container = document.getElementById("ratingContainer");
+    const container = document.getElementById("ratingContainer");
 
-pertanyaan.forEach((q, i) => {
-  const div = document.createElement("div");
-  
-  // label pertanyaan
-  const label = document.createElement("label");
-  label.textContent = `${i+1}. ${q}`;
-  div.appendChild(label);
-  div.appendChild(document.createElement("br"));
-
-  // input radio 1-5
-  [1,2,3,4,5].forEach(n => {
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.name = `rating${i}`;
-    input.value = n;
-
-    const span = document.createElement("span");
-    span.textContent = n;
-
-    div.appendChild(input);
-    div.appendChild(span);
-  });
-
-  container.appendChild(div);
-});
-
-      // element refs
-      const saveBtn = document.getElementById("saveBtn");
-      const spinner = document.getElementById("loadingSpinner");
-      const voucherCard = document.getElementById("voucherCard");
-      const claimBtn = document.getElementById("claimVoucher");
-      const claimSpinner = document.getElementById("claimSpinner");
-      const claimText = document.getElementById("claimText");
-      const finalButtons = document.getElementById("finalButtons");
-      const popup = document.getElementById("voucherPopup");
-      const closePopup = popup.querySelector(".close-btn");
-      const downloadSendBtn = document.getElementById("downloadSendBtn");
-      const resetBtn = document.getElementById("resetBtn");
-
-      // helper: convert image element to base64 (waits for load) and handle CORS
-      function imgToBase64(imgEl) {
-        return new Promise((resolve) => {
-          if(!imgEl || !imgEl.src) return resolve(null);
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.src = imgEl.src + (imgEl.src.indexOf('?') === -1 ? '' : '');
-          // if already loaded and naturalWidth > 0, proceed
-          if (imgEl.complete && imgEl.naturalWidth) {
-            try {
-              const canvas = document.createElement('canvas');
-              canvas.width = imgEl.naturalWidth;
-              canvas.height = imgEl.naturalHeight;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(imgEl, 0, 0);
-              return resolve(canvas.toDataURL('image/png'));
-            } catch (e) {
-              return resolve(null);
-            }
-          }
-          img.onload = () => {
-            try {
-              const canvas = document.createElement('canvas');
-              canvas.width = img.width;
-              canvas.height = img.height;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0);
-              resolve(canvas.toDataURL('image/png'));
-            } catch(e) {
-              resolve(null);
-            }
-          };
-          img.onerror = () => resolve(null);
-        });
-      }
-
-      // localStorage save/load
-      function saveToLocal() {
-        const data = {
-          nama: document.getElementById("nama").value || "",
-          meja: document.getElementById("meja").value || "",
-          usia: document.getElementById("usia").value || "",
-          gender: document.getElementById("gender").value || "",
-          freq: document.getElementById("freq").value || "",
-          rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || "",
-          suka: document.getElementById("suka").value || "",
-          perbaikan: document.getElementById("perbaikan").value || "",
-          menu: document.getElementById("menu").value || "",
-          ratings: pertanyaan.map((q,i)=> document.querySelector(`input[name="rating${i}"]:checked`)?.value || "")
-        };
-        localStorage.setItem("ocean_kuesioner", JSON.stringify(data));
-      }
-
-      function loadFromLocal() {
-        const raw = localStorage.getItem("ocean_kuesioner");
-        if(!raw) return;
-        try {
-          const data = JSON.parse(raw);
-          document.getElementById("nama").value = data.nama || "";
-          document.getElementById("meja").value = data.meja || "";
-          document.getElementById("usia").value = data.usia || "";
-          document.getElementById("gender").value = data.gender || "";
-          document.getElementById("freq").value = data.freq || "";
-          if(data.rekomend){
-            const el = document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`);
-            if(el) el.checked = true;
-          }
-          document.getElementById("suka").value = data.suka || "";
-          document.getElementById("perbaikan").value = data.perbaikan || "";
-          document.getElementById("menu").value = data.menu || "";
-          (data.ratings || []).forEach((val,i)=>{
-            if(val){
-              const r = document.querySelector(`input[name="rating${i}"][value="${val}"]`);
-              if(r) r.checked = true;
-            }
-          });
-        } catch(e){ /* ignore parse error */ }
-      }
-
-      // lightweight PDF writer using jsPDF (text + images via canvas)
-     // otomatis isi field tanggal & jam saat halaman dibuka
-  window.addEventListener("load", () => {
-    const now = new Date();
-    const tanggal = now.toLocaleDateString("id-ID", {
-      weekday: "long", year: "numeric", month: "long", day: "numeric"
-    });
-    const jam = now.toLocaleTimeString("id-ID", {
-      hour: "2-digit", minute: "2-digit", second: "2-digit"
-    });
-    document.getElementById("waktu").value = `${tanggal} - ${jam}`;
-  });
-
-  async function savePDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    // ================= HEADER =================
-    pdf.setFontSize(16);
-    pdf.text("OCEAN BAR & KITCHEN", 10, 15);
-    pdf.setFontSize(11);
-    pdf.text("Jl. Kenangan No.123, Jakarta", 10, 22);
-    pdf.text("Telp: 021-123456 | IG: @oceanbar", 10, 28);
-    pdf.setFontSize(10);
-    pdf.text("Tagline: Rasa Bintang 5, Harga Merakyat", 10, 34);
-    pdf.line(10, 38, 200, 38); // garis pemisah
-
-    // ================= ISI FORM =================
-    let y = 48;
-    const waktu = document.getElementById("waktu").value || "-";
-    const nama = document.getElementById("nama").value || "-";
-    const meja = document.getElementById("meja").value || "-";
-    const usia = document.getElementById("usia").value || "-";
-    const gender = document.getElementById("gender").value || "-";
-    const freq = document.getElementById("freq").value || "-";
-    const rekomend = document.querySelector('input[name="rekomend"]:checked')?.value || "-";
-    const suka = document.getElementById("suka").value || "-";
-    const perbaikan = document.getElementById("perbaikan").value || "-";
-    const menu = document.getElementById("menu").value || "-";
-
-    pdf.setFontSize(12);
-    pdf.text(`Tanggal & Jam   : ${waktu}`, 10, y); y+=8;
-    pdf.text(`Nama Pengisi    : ${nama}`, 10, y); y+=8;
-    pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
-    pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
-    pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
-    pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
-    pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
-
-    // ================= RATING =================
-    pdf.setFontSize(12);
-    pdf.text("Penilaian:", 10, y); y+=8;
     pertanyaan.forEach((q, i) => {
-      const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
-      pdf.setFontSize(10);
-      pdf.text(`${i+1}. ${q} = ${val}`, 15, y);
-      y += 6;
-      if (y > 260) { 
-        pdf.addPage(); 
-        y = 20; 
-      }
+      const div = document.createElement("div");
+      
+      // label pertanyaan
+      const label = document.createElement("label");
+      label.textContent = `${i+1}. ${q}`;
+      div.appendChild(label);
+      div.appendChild(document.createElement("br"));
+
+      // input radio 1-5
+      [1,2,3,4,5].forEach(n => {
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `rating${i}`;
+        input.value = n;
+
+        const span = document.createElement("span");
+        span.textContent = n;
+
+        div.appendChild(input);
+        div.appendChild(span);
+      });
+
+      container.appendChild(div);
     });
-    y+=8;
 
-    // ================= SUKA / PERBAIKAN / MENU =================
-    pdf.setFontSize(12);
-    pdf.text("Yang Disukai:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
+    // element refs
+    const saveBtn = document.getElementById("saveBtn");
+    const spinner = document.getElementById("loadingSpinner");
+    const voucherCard = document.getElementById("voucherCard");
+    const claimBtn = document.getElementById("claimVoucher");
+    const claimSpinner = document.getElementById("claimSpinner");
+    const claimText = document.getElementById("claimText");
+    const finalButtons = document.getElementById("finalButtons");
+    const popup = document.getElementById("voucherPopup");
+    const closePopup = popup.querySelector(".close-btn");
+    const downloadSendBtn = document.getElementById("downloadSendBtn");
+    const resetBtn = document.getElementById("resetBtn");
 
-    pdf.setFontSize(12);
-    pdf.text("Perlu Perbaikan:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
-
-    pdf.setFontSize(12);
-    pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
-    pdf.setFontSize(10);
-    pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
-
-    // ================= FOOTER =================
-    pdf.setFontSize(10);
-    pdf.text("Terima kasih sudah mengisi kuesioner 🙏", 10, 285);
-
-    // Simpan file
-    pdf.save("kuesioner.pdf");
-  }
-
-      // ========== Save button event ==========
-      saveBtn.addEventListener("click", () => {
-        // validation
-        const meja = document.getElementById("meja").value.trim();
-        const usia = document.getElementById("usia").value;
-        const gender = document.getElementById("gender").value;
-        const freq = document.getElementById("freq").value;
-        const rekomend = document.querySelector('input[name="rekomend"]:checked');
-        let allRated = true;
-        for(let i=0;i<pertanyaan.length;i++){
-          if(!document.querySelector(`input[name="rating${i}"]:checked`)){
-            allRated = false; break;
+    // helper: convert image element to base64 (waits for load) and handle CORS
+    function imgToBase64(imgEl) {
+      return new Promise((resolve) => {
+        if(!imgEl || !imgEl.src) return resolve(null);
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = imgEl.src + (imgEl.src.indexOf('?') === -1 ? '' : '');
+        // if already loaded and naturalWidth > 0, proceed
+        if (imgEl.complete && imgEl.naturalWidth) {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = imgEl.naturalWidth;
+            canvas.height = imgEl.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(imgEl, 0, 0);
+            return resolve(canvas.toDataURL('image/png'));
+          } catch (e) {
+            return resolve(null);
           }
         }
-        if(!meja || !usia || !gender || !freq || !rekomend || !allRated){
-          alert("Harap lengkapi semua field, termasuk rating & rekomendasi.");
-          return;
-        }
-
-        // show loading small + simulate quick save
-        saveBtn.disabled = true;
-        spinner.style.display = "inline-block";
-        setTimeout(()=>{
-          saveToLocal();
-          voucherCard.style.display = "block";
-          finalButtons.style.display = "flex";
-          saveBtn.disabled = false;
-          spinner.style.display = "none";
-          alert("Simpan Berhasil ✅");
-        }, 700);
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL('image/png'));
+          } catch(e) {
+            resolve(null);
+          }
+        };
+        img.onerror = () => resolve(null);
       });
+    }
 
-      // ========== Claim voucher event ==========
-      claimBtn.addEventListener("click", async () => {
-        claimBtn.disabled = true;
-        claimSpinner.style.display = "inline-block";
-        claimText.style.display = "none";
+    // localStorage save/load
+    function saveToLocal() {
+      const data = {
+        nama: document.getElementById("nama").value || "",
+        meja: document.getElementById("meja").value || "",
+        usia: document.getElementById("usia").value || "",
+        gender: document.getElementById("gender").value || "",
+        freq: document.getElementById("freq").value || "",
+        rekomend: document.querySelector('input[name="rekomend"]:checked')?.value || "",
+        suka: document.getElementById("suka").value || "",
+        perbaikan: document.getElementById("perbaikan").value || "",
+        menu: document.getElementById("menu").value || "",
+        ratings: pertanyaan.map((q,i)=> document.querySelector(`input[name="rating${i}"]:checked`)?.value || "")
+      };
+      localStorage.setItem("ocean_kuesioner", JSON.stringify(data));
+    }
 
-        // render lightweight PDF with images
-        try{
-          await savePDF();
-          // show popup
-          popup.style.display = "flex";
-        }catch(e){
-          console.error(e);
-          alert("Terjadi kesalahan saat membuat PDF.");
-        }finally{
-          claimBtn.disabled = false;
-          claimSpinner.style.display = "none";
-          claimText.style.display = "inline";
+    function loadFromLocal() {
+      const raw = localStorage.getItem("ocean_kuesioner");
+      if(!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        document.getElementById("nama").value = data.nama || "";
+        document.getElementById("meja").value = data.meja || "";
+        document.getElementById("usia").value = data.usia || "";
+        document.getElementById("gender").value = data.gender || "";
+        document.getElementById("freq").value = data.freq || "";
+        if(data.rekomend){
+          const el = document.querySelector(`input[name="rekomend"][value="${data.rekomend}"]`);
+          if(el) el.checked = true;
+        }
+        document.getElementById("suka").value = data.suka || "";
+        document.getElementById("perbaikan").value = data.perbaikan || "";
+        document.getElementById("menu").value = data.menu || "";
+        (data.ratings || []).forEach((val,i)=>{
+          if(val){
+            const r = document.querySelector(`input[name="rating${i}"][value="${val}"]`);
+            if(r) r.checked = true;
+          }
+        });
+      } catch(e){ /* ignore parse error */ }
+    }
+
+    // otomatis isi field tanggal & jam saat halaman dibuka
+    window.addEventListener("load", () => {
+      const now = new Date();
+      const tanggal = now.toLocaleDateString("id-ID", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric"
+      });
+      const jam = now.toLocaleTimeString("id-ID", {
+        hour: "2-digit", minute: "2-digit", second: "2-digit"
+      });
+      document.getElementById("waktu").value = `${tanggal} - ${jam}`;
+    });
+
+    // lightweight PDF writer using jsPDF
+    async function savePDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      // ================= HEADER =================
+      pdf.setFontSize(16);
+      pdf.text("OCEAN BAR & KITCHEN", 10, 15);
+      pdf.setFontSize(11);
+      pdf.text("Jl. Kenangan No.123, Jakarta", 10, 22);
+      pdf.text("Telp: 021-123456 | IG: @oceanbar", 10, 28);
+      pdf.setFontSize(10);
+      pdf.text("Tagline: Rasa Bintang 5, Harga Merakyat", 10, 34);
+      pdf.line(10, 38, 200, 38); // garis pemisah
+
+      // ================= ISI FORM =================
+      let y = 48;
+      const waktu = document.getElementById("waktu").value || "-";
+      const nama = document.getElementById("nama").value || "-";
+      const meja = document.getElementById("meja").value || "-";
+      const usia = document.getElementById("usia").value || "-";
+      const gender = document.getElementById("gender").value || "-";
+      const freq = document.getElementById("freq").value || "-";
+      const rekomend = document.querySelector('input[name="rekomend"]:checked')?.value || "-";
+      const suka = document.getElementById("suka").value || "-";
+      const perbaikan = document.getElementById("perbaikan").value || "-";
+      const menu = document.getElementById("menu").value || "-";
+
+      pdf.setFontSize(12);
+      pdf.text(`Tanggal & Jam   : ${waktu}`, 10, y); y+=8;
+      pdf.text(`Nama Pengisi    : ${nama}`, 10, y); y+=8;
+      pdf.text(`Nomor Meja      : ${meja}`, 10, y); y+=8;
+      pdf.text(`Usia            : ${usia}`, 10, y); y+=8;
+      pdf.text(`Jenis Kelamin   : ${gender}`, 10, y); y+=8;
+      pdf.text(`Frekuensi       : ${freq}`, 10, y); y+=8;
+      pdf.text(`Rekomendasi     : ${rekomend}`, 10, y); y+=12;
+
+      // ================= RATING =================
+      pdf.setFontSize(12);
+      pdf.text("Penilaian:", 10, y); y+=8;
+      pertanyaan.forEach((q, i) => {
+        const val = document.querySelector(`input[name="rating${i}"]:checked`)?.value || "-";
+        pdf.setFontSize(10);
+        pdf.text(`${i+1}. ${q} = ${val}`, 15, y);
+        y += 6;
+        if (y > 260) { 
+          pdf.addPage(); 
+          y = 20; 
         }
       });
+      y+=8;
 
-      // ========== popup close ==========
-      closePopup.addEventListener("click", ()=> popup.style.display = "none");
+      // ================= SUKA / PERBAIKAN / MENU =================
+      pdf.setFontSize(12);
+      pdf.text("Yang Disukai:", 10, y); y+=6;
+      pdf.setFontSize(10);
+      pdf.text(suka, 15, y, { maxWidth: 180 }); y+=12;
 
-      // ========== Download & send WA ==========
-     // Ambil tombol
-const downloadSendBtn = document.getElementById("downloadSendBtn");
-const resetBtn = document.getElementById("resetBtn");
+      pdf.setFontSize(12);
+      pdf.text("Perlu Perbaikan:", 10, y); y+=6;
+      pdf.setFontSize(10);
+      pdf.text(perbaikan, 15, y, { maxWidth: 180 }); y+=12;
 
-// Ganti label tombol Download & Kirim WA jadi KIRIM & tambahkan kelas emas
-downloadSendBtn.querySelector("span").innerText = "KIRIM";
-downloadSendBtn.classList.add("golden");
+      pdf.setFontSize(12);
+      pdf.text("Menu yang Diinginkan:", 10, y); y+=6;
+      pdf.setFontSize(10);
+      pdf.text(menu, 15, y, { maxWidth: 180 }); y+=12;
 
-// Tambahkan kelas emas ke tombol reset
-resetBtn.classList.add("golden");
+      // ================= FOOTER =================
+      pdf.setFontSize(10);
+      pdf.text("Terima kasih sudah mengisi kuesioner 🙏", 10, 285);
 
-// ========== Download & send WA ==========
-downloadSendBtn.addEventListener("click", ()=>{
-  const phone = "6285712469835";
-  const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
-  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-});
+      // Simpan file
+      pdf.save("kuesioner.pdf");
+    }
 
-// ========== Reset ==========
-resetBtn.addEventListener("click", ()=>{
-  if(confirm("Reset semua isi form dan hapus data lokal?")){
-    document.getElementById("survey").reset();
-    voucherCard.style.display = "none";
-    finalButtons.style.display = "none";
-    localStorage.removeItem("ocean_kuesioner");
-    alert("Form dan data lokal sudah direset.");
-  }
-});
+    // ========== Save button event ==========
+    saveBtn.addEventListener("click", () => {
+      // validation
+      const meja = document.getElementById("meja").value.trim();
+      const usia = document.getElementById("usia").value;
+      const gender = document.getElementById("gender").value;
+      const freq = document.getElementById("freq").value;
+      const rekomend = document.querySelector('input[name="rekomend"]:checked');
+      let allRated = true;
+      for(let i=0;i<pertanyaan.length;i++){
+        if(!document.querySelector(`input[name="rating${i}"]:checked`)){
+          allRated = false; break;
+        }
+      }
+      if(!meja || !usia || !gender || !freq || !rekomend || !allRated){
+        alert("Harap lengkapi semua field, termasuk rating & rekomendasi.");
+        return;
+      }
 
+      // show loading small + simulate quick save
+      saveBtn.disabled = true;
+      spinner.style.display = "inline-block";
+      setTimeout(()=>{
+        saveToLocal();
+        voucherCard.style.display = "block";
+        finalButtons.style.display = "flex";
+        saveBtn.disabled = false;
+        spinner.style.display = "none";
+        alert("Simpan Berhasil ✅");
+      }, 700);
+    });
 
-      // load previously saved
-      loadFromLocal();
-    }); // DOMContentLoaded end
-  </script>
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const now = new Date();
-  const tanggal = now.toLocaleDateString("id-ID", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric"
-  });
-  const jam = now.toLocaleTimeString("id-ID", {
-    hour: "2-digit", minute: "2-digit", second: "2-digit"
-  });
-  document.getElementById("waktu").value = `${tanggal} - ${jam}`;
-});
+    // ========== Claim voucher event ==========
+    claimBtn.addEventListener("click", async () => {
+      claimBtn.disabled = true;
+      claimSpinner.style.display = "inline-block";
+      claimText.style.display = "none";
+
+      // render lightweight PDF with images
+      try{
+        await savePDF();
+        // show popup
+        popup.style.display = "flex";
+      }catch(e){
+        console.error(e);
+        alert("Terjadi kesalahan saat membuat PDF.");
+      }finally{
+        claimBtn.disabled = false;
+        claimSpinner.style.display = "none";
+        claimText.style.display = "inline";
+      }
+    });
+
+    // ========== popup close ==========
+    closePopup.addEventListener("click", ()=> popup.style.display = "none");
+
+    // ========== Download & send WA ==========
+    downloadSendBtn.querySelector("span").innerText = "KIRIM";
+    downloadSendBtn.classList.add("golden");
+
+    // Tambahkan kelas emas ke tombol reset
+    resetBtn.classList.add("golden");
+
+    downloadSendBtn.addEventListener("click", ()=>{
+      const phone = "6285712469835";
+      const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
+      window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    });
+
+    // ========== Reset ==========
+    resetBtn.addEventListener("click", ()=>{
+      if(confirm("Reset semua isi form dan hapus data lokal?")){
+        document.getElementById("survey").reset();
+        voucherCard.style.display = "none";
+        finalButtons.style.display = "none";
+        localStorage.removeItem("ocean_kuesioner");
+        alert("Form dan data lokal sudah direset.");
+      }
+    });
+
+    // load previously saved
+    loadFromLocal();
+  }); // DOMContentLoaded end
 </script>
 
 </body>
 </html>
+
 
 
 
