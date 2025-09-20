@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OCEAN BAR & KITCHEN - Kuisioner</title>
+  <title>OCEAN BAR & KITCHEN</title>
 
   <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -149,7 +149,9 @@
       <h1>OCEAN BAR & KITCHEN</h1>
       <p class="lead">📍 Jl.Ahmad Yani 34, Kutorejo, Sragen</p>
       <p class="lead">☎️ +62 857-1246-9835</p>
-      <p class="lead-highlight">Bantu kami berkembang — isi kuisioner singkat ini. Semua jawaban bersifat anonim.</p>
+      <br>
+       <p class="lead">Hallo Oceaner's..</p>
+      <p class="lead-highlight">Bantu kami berkembang — isi kuesioner singkat ini. Semua jawaban bersifat anonim.</p>
     </header>
 
     <form id="survey" autocomplete="off">
@@ -199,6 +201,19 @@
         <label>Apa yang perlu diperbaiki?<textarea id="perbaikan" placeholder="Masukkan saran..."></textarea></label>
         <label>Menu seperti apa yang anda inginkan untuk kami hadirkan?<textarea id="perbaikan" placeholder="Masukkan saran..."></textarea></label>
       </fieldset>
+      <!-- Tambahan di dalam <form id="survey"> -->
+<fieldset>
+  <legend>Rekomendasi</legend>
+  <label class="field">Apakah Anda akan merekomendasikan restoran kami?</label>
+  <div style="display:flex;gap:12px">
+    <label style="display:flex;gap:8px;align-items:center">
+      <input type="radio" name="rekomend" value="Ya" required> Ya
+    </label>
+    <label style="display:flex;gap:8px;align-items:center">
+      <input type="radio" name="rekomend" value="Tidak" required> Tidak
+    </label>
+  </div>
+</fieldset>
 
       <div style="text-align:center; margin-top:12px;">
         <button type="button" id="saveBtn">Simpan</button>
@@ -268,9 +283,29 @@
     const closePopup = popup.querySelector(".close-btn");
 
     saveBtn.addEventListener("click",()=>{
-      voucherCard.style.display="block";
-      saveBtn.disabled=true;
-    });
+  const meja = document.getElementById("meja").value.trim();
+  const usia = document.getElementById("usia").value;
+  const gender = document.getElementById("gender").value;
+  const freq = document.getElementById("freq").value;
+  const rekomend = document.querySelector('input[name="rekomend"]:checked');
+
+  // cek rating
+  let allRated = true;
+  pertanyaan.forEach((q,i)=>{
+    if(!document.querySelector(`input[name="rating${i}"]:checked`)) {
+      allRated = false;
+    }
+  });
+
+  if(!meja || !usia || !gender || !freq || !rekomend || !allRated){
+    alert("Harap lengkapi semua field, termasuk rating & rekomendasi.");
+    return;
+  }
+
+  voucherCard.style.display="block";
+  saveBtn.disabled=true;
+});
+
 
     claimBtn.addEventListener("click",()=>{
       popup.style.display="flex";
@@ -300,4 +335,5 @@
   </script>
 </body>
 </html>
+
 
