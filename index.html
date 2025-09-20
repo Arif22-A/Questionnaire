@@ -298,17 +298,41 @@ button.golden span {
       </form>
     </div>
 
-    <div id="voucherPopup" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999;">
-      <div class="popup-content">
-        <button class="close-btn" aria-label="Tutup">✕</button>
-        <h3 style="margin-top:0;color:#fff">🎉 Klaim Voucher Berhasil! 🎉</h3>
-        <ol style="color:var(--muted);line-height:1.5">
-          <li>Pastikan voucher terlihat jelas di layar.</li>
-          <li>Tekan tombol "Download & Kirim ke WA" untuk mengirim ke admin.</li>
-          <li>File PDF akan otomatis terunduh.</li>
-        </ol>
-      </div>
-    </div>
+  <div id="voucherPopup" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:9999;">
+  <div class="popup-content" style="background:#111;color:var(--gold);padding:24px;border-radius:12px;width:min(500px,90%);box-shadow:0 10px 40px rgba(0,0,0,0.6);border:1px solid rgba(255,215,0,0.2);position:relative;">
+    
+    <!-- Tombol Tutup -->
+    <button class="close-btn" aria-label="Tutup" 
+      style="background:none;border:none;color:var(--gold);font-size:20px;cursor:pointer;position:absolute;right:16px;top:14px;">
+      ✕
+    </button>
+
+    <!-- Judul -->
+    <h3 style="margin-top:0;margin-bottom:10px;text-align:center;font-size:18px;color:#FFD700">
+      🎉 Klaim Voucher Berhasil 🎉
+    </h3>
+
+    <!-- Instruksi -->
+    <p style="color:#f0f0f0;font-size:14px;text-align:center;margin-bottom:14px">
+      Silakan ikuti panduan berikut untuk mengirimkan hasil kuesioner Anda:
+    </p>
+
+    <ol style="color:var(--muted);line-height:1.6;font-size:14px;padding-left:20px;">
+      <li>Pastikan file PDF kuesioner sudah berhasil <strong>di-download</strong>.</li>
+      <li>Klik tombol kirim di bawah voucher.</li>
+      <li>Anda akan diarahkan ke Chat room WA admin</li>
+      <li>Tekan tombol <em>📎 Lampiran</em>, pilih <strong>Dokumen</strong>.</li>
+      <li>Kirimkan file PDF kuesioner yang sudah diunduh tadi.</li>
+      <li>Tunggu konfirmasi dari Admin untuk validasi voucher Anda.</li>
+    </ol>
+
+    <!-- Footer -->
+    <p style="margin-top:18px;text-align:center;font-size:13px;color:#aaa">
+      Terima kasih sudah berpartisipasi 💛
+    </p>
+  </div>
+</div>
+
 
     <footer>
       ©2025 OCEAN BAR & KITCHEN — All rights reserved
@@ -544,23 +568,27 @@ async function savePDF() {
   const voucherEl = document.querySelector("#voucherCard img");
   if (voucherEl) {
     try {
-      const voucherBase64 = await imgToBase64(voucherEl);
-      if (y > 200) { // biar ga nabrak footer
-        pdf.addPage();
-        y = 20;
-      }
+     // ===== Voucher image =====
+const voucherEl = document.querySelector("#voucherCard img");
+if (voucherEl) {
+  try {
+    const voucherBase64 = await imgToBase64(voucherEl);
+    if (voucherBase64) {
       pdf.setFontSize(12);
-      pdf.text("Voucher:", 10, y); y+=6;
-     pdf.addImage(voucherBase64, "PNG", 10, y, 120, 40); 
-      y += 50;
-    } catch(e) {
-      console.error("Gagal konversi voucher:", e);
+      pdf.text("Voucher:", 10, y); 
+      y += 6;
+      // perkecil ukuran biar muat (100x30 misalnya)
+      pdf.addImage(voucherBase64, "PNG", 10, y, 100, 30);
+      y += 40; // jarak setelah voucher
     }
+  } catch(e) {
+    console.error("Gagal konversi voucher:", e);
   }
+}
+
 
   // ===== Footer =====
   pdf.setFontSize(10);
-  pdf.text("Terima kasih sudah mengisi kuesioner", 10, 285);
 
   // Simpan file
   pdf.save("kuesioner.pdf");
@@ -626,7 +654,7 @@ async function savePDF() {
   downloadSendBtn.addEventListener("click", () => {
     const phone = "6285712469835";
     const message = encodeURIComponent(
-      "Halo Admin, saya mengirim voucher dari kuisioner."
+      "Halo Admin, saya mengirim hasil dari kuesioner."
     );
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
   });
@@ -648,26 +676,5 @@ async function savePDF() {
 });
 
 </script>
-
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
