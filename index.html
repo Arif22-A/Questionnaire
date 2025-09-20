@@ -310,16 +310,32 @@ button.golden:hover {
 
 const container = document.getElementById("ratingContainer");
 
-pertanyaan.forEach((q,i) => {
+pertanyaan.forEach((q, i) => {
   const div = document.createElement("div");
-  div.innerHTML = `
-    <label>${i+1}. ${q}</label><br>
-    ${[1,2,3,4,5].map(n => `
-      <input type="radio" name="rating${i}" value="${n}">${n}
-    `).join('')}
-  `;
+  
+  // label pertanyaan
+  const label = document.createElement("label");
+  label.textContent = `${i+1}. ${q}`;
+  div.appendChild(label);
+  div.appendChild(document.createElement("br"));
+
+  // input radio 1-5
+  [1,2,3,4,5].forEach(n => {
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = `rating${i}`;
+    input.value = n;
+
+    const span = document.createElement("span");
+    span.textContent = n;
+
+    div.appendChild(input);
+    div.appendChild(span);
+  });
+
   container.appendChild(div);
 });
+
       // element refs
       const saveBtn = document.getElementById("saveBtn");
       const spinner = document.getElementById("loadingSpinner");
@@ -606,6 +622,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
