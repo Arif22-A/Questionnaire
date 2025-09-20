@@ -269,7 +269,7 @@ button.golden:hover {
 
         <div class="btn-row" id="finalButtons" aria-hidden="true">
           <button type="button" id="resetBtn" class="btn" style="background:#e74c3c">Reset</button>
-          <button type="button" id="downloadSendBtn" class="btn" style="background:#2ecc71">Download & Kirim ke WA</button>
+         <button id="downloadSendBtn" class="golden"><span>Kirim</span></button>
         </div>
       </form>
     </div>
@@ -562,7 +562,7 @@ const downloadSendBtn = document.getElementById("downloadSendBtn");
 const resetBtn = document.getElementById("resetBtn");
 
 // Ganti label tombol Download & Kirim WA jadi KIRIM & tambahkan kelas emas
-downloadSendBtn.textContent = "Kirim";
+downloadSendBtn.querySelector("span").innerText = "KIRIM";
 downloadSendBtn.classList.add("golden");
 
 // Tambahkan kelas emas ke tombol reset
@@ -606,6 +606,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
