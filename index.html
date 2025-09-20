@@ -139,6 +139,9 @@
     #voucherPopup .close-btn::after { transform: translate(-50%,-50%) rotate(-45deg); }
     #voucherPopup .close-btn:hover::before,
     #voucherPopup .close-btn:hover::after { background-color:#ffc107; }
+.page-break {
+  page-break-before: always;
+}
 
   </style>
 </head>
@@ -415,23 +418,33 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===== Event Claim Voucher =====
-  claimBtn.addEventListener("click", async ()=>{
-    claimBtn.disabled = true;
-    document.getElementById("claimText").style.display = "none";
-    document.getElementById("claimSpinner").style.display = "inline";
+claimBtn.addEventListener("click", async ()=>{
+  claimBtn.disabled = true;
+  document.getElementById("claimText").style.display = "none";
+  document.getElementById("claimSpinner").style.display = "inline";
 
-    // render pdf + tampilkan popup
-    await savePDF();
+  // render pdf + tampilkan popup
+  const element = document.getElementById("kuesioner"); // pastikan form dibungkus id="kuesioner"
+  const opt = {
+    margin:       10,
+    filename:     "kuesioner.pdf",
+    image:        { type: "jpeg", quality: 0.98 },
+    html2canvas:  { scale: 1.5 },
+    jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" },
+    pagebreak:    { mode: ["avoid-all", "css", "legacy"] }
+  };
 
-    popup.style.display="flex";
-    finalButtons.style.display="flex";
+  await html2pdf().set(opt).from(element).save();
 
-    claimBtn.disabled = false;
-    document.getElementById("claimText").style.display = "inline";
-    document.getElementById("claimSpinner").style.display = "none";
-  });
+  popup.style.display="flex";
+  finalButtons.style.display="flex";
 
-  closePopup.addEventListener("click",()=> popup.style.display="none");
+  claimBtn.disabled = false;
+  document.getElementById("claimText").style.display = "inline";
+  document.getElementById("claimSpinner").style.display = "none";
+});
+
+closePopup.addEventListener("click",()=> popup.style.display="none");
 
   // ===== Event Reset =====
   document.getElementById("resetBtn").addEventListener("click",()=>{
@@ -457,6 +470,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
