@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>OCEAN BAR & KITCHEN — Kuesioner</title>
+  <title>OCEAN BAR & KITCHEN</title>
 
   <!-- jsPDF -->
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -148,19 +148,23 @@
 }
 /* ========== TOMBOL EMAS ========== */
 button.golden {
-  background: linear-gradient(45deg, #FFD700, #FFC107);
-  border: 1px solid #E6BE00;
-  color: #000;
-  font-weight: bold;
+  background: linear-gradient(135deg, #d4af37, #ffd700);
+  color: #fff;
+  border: none;
   padding: 10px 20px;
-  border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease;
+  border-radius: 9999px; /* pill shape */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 button.golden:hover {
-  background: linear-gradient(45deg, #FFC107, #FFD700);
-  box-shadow: 0 0 8px #FFD700;
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+button.golden span {
+  text-transform: capitalize;
 }
 
   </style>
@@ -538,8 +542,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====== Popup Close ======
   closePopup.addEventListener("click", () => (popup.style.display = "none"));
 
-  // ====== Download & Send WA ======
-  downloadSendBtn.querySelector("span").innerText = "KIRIM";
+   // ====== Send ======
+  downloadSendBtn.querySelector("span").innerText = "Kirim";
   downloadSendBtn.classList.add("golden");
   downloadSendBtn.addEventListener("click", () => {
     const phone = "6285712469835";
@@ -564,11 +568,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====== Load Data ======
   loadFromLocal();
 });
+
 </script>
 
 
 </body>
 </html>
+
 
 
 
