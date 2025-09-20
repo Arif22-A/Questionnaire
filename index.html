@@ -249,7 +249,11 @@
     <h3>🎉 Selamat! Anda mendapatkan Voucher Diskon 🎉</h3>
     <img src="voucher.png" alt="Voucher" class="voucher-img">
     <div>
-      <button type="button" id="claimVoucher">Klaim Voucher</button>
+     <button id="claimVoucher">
+  <span id="claimText">Klaim Voucher</span>
+  <span id="claimSpinner" style="display:none">⏳</span>
+</button>
+
     </div>
   </div>
 
@@ -415,10 +419,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===== Event Claim Voucher =====
-  claimBtn.addEventListener("click",()=>{
+ claimBtn.addEventListener("click",()=>{
+  // tampilkan indikator loading
+  claimBtn.disabled = true;
+  document.getElementById("claimText").style.display = "none";
+  document.getElementById("claimSpinner").style.display = "inline";
+
+  setTimeout(()=>{
     popup.style.display="flex";
     finalButtons.style.display="flex";
-  });
+
+    // kembalikan tombol normal
+    claimBtn.disabled = false;
+    document.getElementById("claimText").style.display = "inline";
+    document.getElementById("claimSpinner").style.display = "none";
+  }, 2000); // simulasi delay proses
+});
+
 
   closePopup.addEventListener("click",()=> popup.style.display="none");
 
@@ -446,6 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
