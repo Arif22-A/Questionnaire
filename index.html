@@ -365,20 +365,40 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===== Fungsi PDF =====
-  async function savePDF() {
-    const { jsPDF } = window.jspdf;
-    const element = document.getElementById("survey"); // render seluruh form + voucher
-    const canvas = await html2canvas(element, { scale:2 });
-    const imgData = canvas.toDataURL("image/png");
+ async function savePDF() {
+  const element = document.getElementById("kuesioner");
+  const { jsPDF } = window.jspdf;
 
-    const pdf = new jsPDF("p","mm","a4");
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  // render canvas dengan setting ringan
+  const canvas = await html2canvas(element, { 
+    scale: 1,                 // jangan terlalu besar
+    backgroundColor: "#fff",  // putih polos
+    useCORS: true
+  });
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("kuesioner.pdf");
+  // ubah jadi hitam putih (grayscale)
+  const ctx = canvas.getContext("2d");
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < imgData.data.length; i += 4) {
+    const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
+    imgData.data[i]   = avg; // R
+    imgData.data[i+1] = avg; // G
+    imgData.data[i+2] = avg; // B
   }
+  ctx.putImageData(imgData, 0, 0);
+
+  const imgBase64 = canvas.toDataURL("image/png", 0.7); // kompres quality
+
+  // masukkan ke PDF
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+  let position = 0;
+  pdf.addImage(imgBase64, "PNG", 0, position, pdfWidth, pdfHeight);
+
+  pdf.save("kuesioner_bw.pdf");
+}
 
   // ===== Event Simpan =====
   saveBtn.addEventListener("click",()=>{
@@ -470,6 +490,7 @@ closePopup.addEventListener("click",()=> popup.style.display="none");
 
 </body>
 </html>
+
 
 
 
