@@ -55,7 +55,7 @@
 }
 
     header img.logo {
-      width:140px;
+      width:200px;
       height:auto;
       display:block;
       margin:0 auto 10px;
@@ -436,22 +436,42 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("waktu").value = `${tanggal} - ${jam}`;
 
   // ====== PDF Export ======
+// === Helper function konversi image DOM ke Base64 ===
+function imgToBase64(imgEl) {
+  return new Promise((resolve, reject) => {
+    try {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = imgEl.naturalWidth;
+      canvas.height = imgEl.naturalHeight;
+      ctx.drawImage(imgEl, 0, 0);
+      resolve(canvas.toDataURL("image/png"));
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+// === Fungsi utama savePDF ===
 async function savePDF() {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("p", "mm", "a4");
 
   // ===== Ambil data header dari DOM =====
-  const namaResto   = document.getElementById("namaResto")?.innerText || "";
-  const alamatResto = document.getElementById("alamatResto")?.innerText || "";
-  const kontakResto = document.getElementById("kontakResto")?.innerText || "";
-  const taglineResto= document.getElementById("taglineResto")?.innerText || "";
-  const logoEl      = document.getElementById("logoResto");
+  const namaResto   = document.getElementById("restoName")?.innerText || "";
+  const alamat1     = document.getElementById("restoAddress1")?.innerText || "";
+  const alamat2     = document.getElementById("restoAddress2")?.innerText || "";
+  const kontakResto = document.getElementById("restoContact")?.innerText || "";
+  const taglineResto= document.getElementById("restoTagline")?.innerText || "";
+  const logoEl      = document.getElementById("restoLogo");
 
   // ===== Tambahkan logo kalau ada =====
   if (logoEl) {
-    const logoBase64 = await imgToBase64(logoEl);
-    if (logoBase64) {
+    try {
+      const logoBase64 = await imgToBase64(logoEl);
       pdf.addImage(logoBase64, "PNG", 160, 10, 30, 30); // kanan atas
+    } catch(e) {
+      console.error("Gagal konversi logo:", e);
     }
   }
 
@@ -459,15 +479,16 @@ async function savePDF() {
   pdf.setFontSize(16);
   pdf.text(namaResto, 10, 15);
   pdf.setFontSize(11);
-  pdf.text(alamatResto, 10, 22);
-  pdf.text(kontakResto, 10, 28);
+  pdf.text(alamat1, 10, 22);
+  pdf.text(alamat2, 10, 28);
+  pdf.text(kontakResto, 10, 34);
   pdf.setFontSize(10);
-  pdf.text(`Tagline: ${taglineResto}`, 10, 34);
+  pdf.text(`Tagline: ${taglineResto}`, 10, 40);
 
-  pdf.line(10, 38, 200, 38); // garis pemisah
+  pdf.line(10, 44, 200, 44); // garis pemisah
 
   // ===== Data form =====
-  let y = 48;
+  let y = 54;
   const waktu     = document.getElementById("waktu").value || "-";
   const nama      = document.getElementById("nama").value || "-";
   const meja      = document.getElementById("meja").value || "-";
@@ -522,16 +543,18 @@ async function savePDF() {
   // ===== Voucher image =====
   const voucherEl = document.querySelector("#voucherCard img");
   if (voucherEl) {
-    const voucherBase64 = await imgToBase64(voucherEl);
-    if (voucherBase64) {
+    try {
+      const voucherBase64 = await imgToBase64(voucherEl);
       if (y > 200) { // biar ga nabrak footer
         pdf.addPage();
         y = 20;
       }
       pdf.setFontSize(12);
       pdf.text("Voucher:", 10, y); y+=6;
-      pdf.addImage(voucherBase64, "PNG", 10, y, 80, 80); // atur ukuran sesuai kebutuhan
+      pdf.addImage(voucherBase64, "PNG", 10, y, 80, 80); 
       y += 90;
+    } catch(e) {
+      console.error("Gagal konversi voucher:", e);
     }
   }
 
@@ -542,7 +565,6 @@ async function savePDF() {
   // Simpan file
   pdf.save("kuesioner.pdf");
 }
-
   // ====== Save Button ======
   saveBtn.addEventListener("click", () => {
     const meja = document.getElementById("meja").value.trim();
@@ -630,6 +652,7 @@ async function savePDF() {
 
 </body>
 </html>
+
 
 
 
