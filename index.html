@@ -146,6 +146,22 @@
   border-radius: 8px;
   color: #FFD700;
 }
+/* ========== TOMBOL EMAS ========== */
+button.golden {
+  background: linear-gradient(45deg, #FFD700, #FFC107);
+  border: 1px solid #E6BE00;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button.golden:hover {
+  background: linear-gradient(45deg, #FFC107, #FFD700);
+  box-shadow: 0 0 8px #FFD700;
+}
 
   </style>
 </head>
@@ -541,23 +557,35 @@ pertanyaan.forEach((q,i) => {
       closePopup.addEventListener("click", ()=> popup.style.display = "none");
 
       // ========== Download & send WA ==========
-      downloadSendBtn.addEventListener("click", ()=>{
-        const phone = "6285712469835";
-        const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
-        // open whatsapp chat (web)
-        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-      });
+     // Ambil tombol
+const downloadSendBtn = document.getElementById("downloadSendBtn");
+const resetBtn = document.getElementById("resetBtn");
 
-      // ========== Reset ==========
-      resetBtn.addEventListener("click", ()=>{
-        if(confirm("Reset semua isi form dan hapus data lokal?")){
-          document.getElementById("survey").reset();
-          voucherCard.style.display = "none";
-          finalButtons.style.display = "none";
-          localStorage.removeItem("ocean_kuesioner");
-          alert("Form dan data lokal sudah direset.");
-        }
-      });
+// Ganti label tombol Download & Kirim WA jadi KIRIM & tambahkan kelas emas
+downloadSendBtn.textContent = "Kirim";
+downloadSendBtn.classList.add("golden");
+
+// Tambahkan kelas emas ke tombol reset
+resetBtn.classList.add("golden");
+
+// ========== Download & send WA ==========
+downloadSendBtn.addEventListener("click", ()=>{
+  const phone = "6285712469835";
+  const message = encodeURIComponent("Halo Admin, saya mengirim voucher dari kuisioner.");
+  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+});
+
+// ========== Reset ==========
+resetBtn.addEventListener("click", ()=>{
+  if(confirm("Reset semua isi form dan hapus data lokal?")){
+    document.getElementById("survey").reset();
+    voucherCard.style.display = "none";
+    finalButtons.style.display = "none";
+    localStorage.removeItem("ocean_kuesioner");
+    alert("Form dan data lokal sudah direset.");
+  }
+});
+
 
       // load previously saved
       loadFromLocal();
@@ -578,6 +606,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
