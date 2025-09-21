@@ -165,6 +165,52 @@ button.golden:hover {
 button.golden span {
   text-transform: capitalize;
 }
+.social-container {
+  text-align: center;
+  padding: 20px;
+  margin: 30px auto;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  max-width: 600px;
+}
+
+.social-title {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.social-subtitle {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.social-btn {
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.social-btn.insta { background: #e1306c; color: #fff; }
+.social-btn.fb { background: #1877f2; color: #fff; }
+.social-btn.wa { background: #25d366; color: #fff; }
+
+.social-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
 
   </style>
 </head>
@@ -330,6 +376,18 @@ button.golden span {
     <p style="margin-top:18px;text-align:center;font-size:13px;color:#aaa">
       Terima kasih sudah berpartisipasi 💛
     </p>
+  </div>
+</div>
+
+    <!-- Container Sosial Media -->
+<div class="social-container">
+  <h3 class="social-title">🌐 Temukan & Ikuti Kami</h3>
+  <p class="social-subtitle">Dukung terus Ocean Bar & Kitchen dengan follow sosial media kami:</p>
+  
+  <div class="social-links">
+    <a href="https://instagram.com/ocean.srg?igsh=dWtlbmV6a2F4ZXNu&utm_source=qr" target="_blank" class="social-btn insta">📷 Instagram</a>
+    <a href="https://facebook.com/username" target="_blank" class="social-btn fb">📘 Facebook</a>
+    <a href="https://wa.me/6285712469835" target="_blank" class="social-btn wa">💬 WhatsApp</a>
   </div>
 </div>
 
@@ -671,4 +729,5 @@ if (voucherEl) {
 </script>
 </body>
 </html>
+
 
